@@ -1,7 +1,21 @@
 package com.capgemini.types;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Version;
+
+import com.capgemini.domain.CooperationEntity;
+import com.capgemini.domain.MovieEntity;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -9,7 +23,8 @@ import lombok.NonNull;
 @Builder
 public class ActorTO {
 	
-	@NonNull
+	private Long version;
+	
 	private Long id;
 	
 	@NonNull
@@ -19,16 +34,22 @@ public class ActorTO {
 	private String lastName;
 	
 	@NonNull
-	private Date birthDate;
+	private LocalDate birthDate;
 	
 	@NonNull
 	private String country;
 	
-	@NonNull
-	private Long studio;
+	private List<Long> cooperations;
 	
-	@NonNull
 	private List<Long> movies;
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 
 	public Long getId() {
 		return id;
@@ -54,11 +75,11 @@ public class ActorTO {
 		this.lastName = lastName;
 	}
 
-	public Date getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
@@ -70,12 +91,12 @@ public class ActorTO {
 		this.country = country;
 	}
 
-	public Long getStudio() {
-		return studio;
+	public List<Long> getCooperations() {
+		return cooperations;
 	}
 
-	public void setStudio(Long studio) {
-		this.studio = studio;
+	public void setCooperations(List<Long> cooperations) {
+		this.cooperations = cooperations;
 	}
 
 	public List<Long> getMovies() {

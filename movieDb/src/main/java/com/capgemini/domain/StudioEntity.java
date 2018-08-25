@@ -8,8 +8,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import com.capgemini.domain.ActorEntity.Builder;
 
@@ -19,34 +23,30 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "STUDIOS")
 @EntityListeners(EntityListener.class)
-@SuperBuilder
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class StudioEntity extends AbstractEntity {
-	
-	@NonNull
+
 	@Column(nullable = false)
 	private String name;
 	
-	@NonNull
 	@Column(nullable = false)
 	private String country;
 	
-	@NonNull
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "studio")
 	private List<MovieEntity> movies;
 	
-	@NonNull
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "studio")
-	private List<ActorEntity> actors;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<CooperationEntity> cooperations;
 	
 	public StudioEntity() {
 	}
 	
 	public StudioEntity(Builder builder) {
-		super(builder.version, builder.id, builder.persistTime, builder.updateTime);
+		super(builder.version,builder.id, builder.persistTime, builder.updateTime);
 		this.name = builder.name;
 		this.country = builder.country;
 		this.movies = builder.movies;
-		this.actors = builder.actors;
+		this.cooperations = builder.cooperations;
 	}
 
 	public String getName() {
@@ -72,15 +72,15 @@ public class StudioEntity extends AbstractEntity {
 	public void setMovies(List<MovieEntity> movies) {
 		this.movies = movies;
 	}
-
-	public List<ActorEntity> getActors() {
-		return actors;
-	}
-
-	public void setActors(List<ActorEntity> actors) {
-		this.actors = actors;
-	}
 	
+	public List<CooperationEntity> getCooperation() {
+		return cooperations;
+	}
+
+	public void setCooperation(List<CooperationEntity> cooperations) {
+		this.cooperations = cooperations;	
+	}
+
 	public static Builder newBuilder(){
 		return new Builder();
 	}
@@ -94,7 +94,7 @@ public class StudioEntity extends AbstractEntity {
 		private String name;
 		private String country;
 		private List<MovieEntity> movies;
-		private List<ActorEntity> actors;
+		private List<CooperationEntity> cooperations;
 		
 		public Builder withId (Long id){
 			this.id = id;
@@ -131,8 +131,8 @@ public class StudioEntity extends AbstractEntity {
 			return this;
 		}
 		
-		public Builder withActors (List<ActorEntity> actors){
-			this.actors = actors;
+		public Builder withCooperations (List<CooperationEntity> cooperations){
+			this.cooperations = cooperations;
 			return this;
 		}
 		

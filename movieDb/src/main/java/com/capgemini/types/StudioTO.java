@@ -2,14 +2,21 @@ package com.capgemini.types;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+
+import com.capgemini.domain.CooperationEntity;
+
 import lombok.Builder;
 import lombok.NonNull;
 
 @Builder
 public class StudioTO {
 	
-	@NonNull
 	private Long id;
+	
+	private Long version;
 	
 	@NonNull
 	private String name;
@@ -17,11 +24,9 @@ public class StudioTO {
 	@NonNull
 	private String country;
 	
-	@NonNull
 	private List<Long> movies;
 	
-	@NonNull
-	private List<Long> actors;
+	private List<Long> cooperations;
 
 	public Long getId() {
 		return id;
@@ -55,12 +60,22 @@ public class StudioTO {
 		this.movies = movies;
 	}
 
-	public List<Long> getActors() {
-		return actors;
+	public Long getVersion() {
+		return version;
 	}
 
-	public void setActors(List<Long> actors) {
-		this.actors = actors;
+	public void setVersion(Long version) {
+		this.version = version;
 	}
+
+	public List<Long> getCooperations() {
+		return cooperations;
+	}
+
+	public void setCooperations(List<Long> cooperations) {
+		this.cooperations = cooperations;
+	}
+
+	
 
 }

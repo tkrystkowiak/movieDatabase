@@ -16,7 +16,7 @@ public class StudioMapper {
 	EntityManager em;
 	
 	@Autowired
-	ActorMapper actorMapper;
+	CooperationMapper cooperationMapper;
 	
 	@Autowired
 	MovieMapper movieMapper;
@@ -24,21 +24,23 @@ public class StudioMapper {
 	public StudioTO mapOnTO(StudioEntity mappedFrom){
 		StudioTO mappedOn = StudioTO.builder()
 				.id(mappedFrom.getId())
+				.version(mappedFrom.getVersion())
 				.country(mappedFrom.getCountry())
 				.name(mappedFrom.getName())
-				.actors(actorMapper.mapOnIds(mappedFrom.getActors()))
+				.cooperations(cooperationMapper.mapOnIds(mappedFrom.getCooperation()))
 				.movies(movieMapper.mapOnIds(mappedFrom.getMovies()))
 				.build();
 		return mappedOn;
 	}
 	
 	public StudioEntity mapOnEntity(StudioTO mappedFrom){
-		StudioEntity mappedOn = StudioEntity.builder()
-				.id(mappedFrom.getId())
-				.country(mappedFrom.getCountry())
-				.name(mappedFrom.getName())
-				.actors(actorMapper.mapOnEntities(mappedFrom.getActors()))
-				.movies(movieMapper.mapOnEntities(mappedFrom.getMovies()))
+		StudioEntity mappedOn = StudioEntity.newBuilder()
+				.withId(mappedFrom.getId())
+				.withVersion(mappedFrom.getVersion())
+				.withCountry(mappedFrom.getCountry())
+				.withName(mappedFrom.getName())
+				.withCooperations(cooperationMapper.mapOnEntities(mappedFrom.getCooperations()))
+				.withMovies(movieMapper.mapOnEntities(mappedFrom.getMovies()))
 				.build();
 		return mappedOn;
 	}

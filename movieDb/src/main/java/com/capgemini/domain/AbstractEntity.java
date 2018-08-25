@@ -9,14 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;;
 
-@Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@SuperBuilder
 public abstract class AbstractEntity {
 	
 	@Version 
@@ -35,7 +34,7 @@ public abstract class AbstractEntity {
 	public AbstractEntity() {
 	}
 
-	public AbstractEntity(Long version,Long id, Time persistTime, Time updateTime) {
+	public AbstractEntity(Long version, Long id, Time persistTime, Time updateTime) {
 		this.version = version;
 		this.id = id;
 		this.persistTime = persistTime;
@@ -64,6 +63,14 @@ public abstract class AbstractEntity {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 	
 }

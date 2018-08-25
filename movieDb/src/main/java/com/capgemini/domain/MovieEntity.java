@@ -2,17 +2,21 @@ package com.capgemini.domain;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import com.capgemini.domain.ActorEntity.Builder;
 
@@ -22,46 +26,35 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "MOVIES")
 @EntityListeners(EntityListener.class)
-@SuperBuilder
 public class MovieEntity extends AbstractEntity {
 	
-	@NonNull
 	@Column(nullable = false)
 	private String title;
 	
-	@NonNull
 	@Column(nullable = false)
 	private String genre;
 	
-	@NonNull
 	@Column(nullable = false)
 	private String type;
 	
-	@NonNull
 	@Column(nullable = false)
 	private Integer length;
 	
-	@NonNull
 	@Column(nullable = false)
-	private Date dateOfPremiere;
+	private LocalDate dateOfPremiere;
 	
-	@NonNull
 	@Column(nullable = false)
 	private String country;
 	
-	@NonNull
 	@Column(nullable = false)
-	private Boolean is3D;
+	private Boolean threeD;
 	
-	@NonNull
 	@Column(nullable = false)
 	private Integer budget;
 	
-	@NonNull
 	@Column(nullable = false)
 	private Integer totalRevenue;
 	
-	@NonNull
 	@Column(nullable = false)
 	private Integer firstWeekRevenue;
 	
@@ -84,7 +77,7 @@ public class MovieEntity extends AbstractEntity {
 		this.length = builder.length;
 		this.dateOfPremiere = builder.dateOfPremiere;
 		this.country = builder.country;
-		this.is3D = builder.is3D;
+		this.threeD = builder.threeD;
 		this.budget = builder.budget;
 		this.totalRevenue = builder.totalRevenue;
 		this.firstWeekRevenue = builder.firstWeekRevenue;
@@ -124,11 +117,11 @@ public class MovieEntity extends AbstractEntity {
 		this.length = length;
 	}
 
-	public Date getDateOfPremiere() {
+	public LocalDate getDateOfPremiere() {
 		return dateOfPremiere;
 	}
 
-	public void setDateOfPremiere(Date dateOfPremiere) {
+	public void setDateOfPremiere(LocalDate dateOfPremiere) {
 		this.dateOfPremiere = dateOfPremiere;
 	}
 
@@ -140,12 +133,12 @@ public class MovieEntity extends AbstractEntity {
 		this.country = country;
 	}
 
-	public Boolean getIs3D() {
-		return is3D;
+	public Boolean getThreeD() {
+		return threeD;
 	}
 
-	public void setIs3D(Boolean is3d) {
-		is3D = is3d;
+	public void setThreeD(Boolean threeD) {
+		this.threeD = threeD;
 	}
 
 	public Integer getBudget() {
@@ -202,9 +195,9 @@ public class MovieEntity extends AbstractEntity {
 		private String genre;
 		private String type;
 		private Integer length;
-		private Date dateOfPremiere;
+		private LocalDate dateOfPremiere;
 		private String country;
-		private Boolean is3D;
+		private Boolean threeD;
 		private Integer budget;
 		private Integer totalRevenue;
 		private Integer firstWeekRevenue;
@@ -252,7 +245,7 @@ public class MovieEntity extends AbstractEntity {
 			return this;
 		}
 		
-		public Builder withDateOfPremiere (Date dateOfPremiere){
+		public Builder withDateOfPremiere (LocalDate dateOfPremiere){
 			this.dateOfPremiere = dateOfPremiere;
 			return this;
 		}
@@ -263,7 +256,7 @@ public class MovieEntity extends AbstractEntity {
 		}
 		
 		public Builder withIs3D (Boolean is3D){
-			this.is3D = is3D;
+			this.threeD = is3D;
 			return this;
 		}
 		

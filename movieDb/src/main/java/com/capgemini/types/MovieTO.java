@@ -1,10 +1,7 @@
 package com.capgemini.types;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
-
-import com.capgemini.domain.ActorEntity;
-import com.capgemini.domain.StudioEntity;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -28,7 +25,7 @@ public class MovieTO {
 	private Integer length;
 	
 	@NonNull
-	private Date dateOfPremiere;
+	private LocalDate dateOfPremiere;
 	
 	@NonNull
 	private String country;
@@ -89,11 +86,11 @@ public class MovieTO {
 		this.length = length;
 	}
 
-	public Date getDateOfPremiere() {
+	public LocalDate getDateOfPremiere() {
 		return dateOfPremiere;
 	}
 
-	public void setDateOfPremiere(Date dateOfPremiere) {
+	public void setDateOfPremiere(LocalDate dateOfPremiere) {
 		this.dateOfPremiere = dateOfPremiere;
 	}
 

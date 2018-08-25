@@ -19,31 +19,39 @@ public class ActorMapper {
 	@PersistenceContext
 	EntityManager em;
 	
-	@Autowired
-	MovieMapper movieMapper;
+	private MovieMapper movieMapper;
+	private CooperationMapper cooperationMapper;
 	
+	@Autowired
+	public ActorMapper(MovieMapper movieMapper, CooperationMapper cooperationMapper) {
+		this.movieMapper = movieMapper;
+		this.cooperationMapper = cooperationMapper;
+	}
+
 	public ActorTO mapOnTO(ActorEntity mappedFrom){
 		ActorTO mappedOn = ActorTO.builder()
 				.id(mappedFrom.getId())
+				.version(mappedFrom.getVersion())
 				.firstName(mappedFrom.getFirstName())
 				.lastName(mappedFrom.getLastName())
 				.birthDate(mappedFrom.getBirthDate())
 				.country(mappedFrom.getCountry())
-				.studio(mappedFrom.getStudio().getId())
+				.cooperations(cooperationMapper.mapOnIds(mappedFrom.getCooperations()))
 				.movies(movieMapper.mapOnIds(mappedFrom.getMovies()))
 				.build();
 		return mappedOn;
 	}
 	
 	public ActorEntity mapOnEntity(ActorTO mappedFrom){
-		ActorEntity mappedOn = ActorEntity.builder()
-				.id(mappedFrom.getId())
-				.firstName(mappedFrom.getFirstName())
-				.lastName(mappedFrom.getLastName())
-				.birthDate(mappedFrom.getBirthDate())
-				.country(mappedFrom.getCountry())
-				.studio(em.getReference(StudioEntity.class, mappedFrom.getStudio()))
-				.movies(movieMapper.mapOnEntities(mappedFrom.getMovies()))
+		ActorEntity mappedOn = ActorEntity.newBuilder()
+				.withId(mappedFrom.getId())
+				.withVersion(mappedFrom.getVersion())
+				.withFirstName(mappedFrom.getFirstName())
+				.withLastName(mappedFrom.getLastName())
+				.withBirthDate(mappedFrom.getBirthDate())
+				.withCountry(mappedFrom.getCountry())
+				.withCooperations(cooperationMapper.mapOnEntities(mappedFrom.getCooperations()))
+				.withMovies(movieMapper.mapOnEntities(mappedFrom.getMovies()))
 				.build();
 		return mappedOn;
 	}

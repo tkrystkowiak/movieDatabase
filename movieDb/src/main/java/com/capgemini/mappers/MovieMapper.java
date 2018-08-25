@@ -32,7 +32,7 @@ public class MovieMapper {
 				.firstWeekRevenue(mappedFrom.getFirstWeekRevenue())
 				.totalRevenue(mappedFrom.getTotalRevenue())
 				.budget(mappedFrom.getBudget())
-				.is3D(mappedFrom.getIs3D())
+				.is3D(mappedFrom.getThreeD())
 				.length(mappedFrom.getLength())
 				.cast(actorMapper.mapOnIds(mappedFrom.getCast()))
 				.studio(mappedFrom.getStudio().getId())
@@ -41,25 +41,29 @@ public class MovieMapper {
 	}
 	
 	public MovieEntity mapOnEntity(MovieTO mappedFrom){
-		MovieEntity mappedOn = MovieEntity.builder()
-				.id(mappedFrom.getId())
-				.genre(mappedFrom.getGenre())
-				.type(mappedFrom.getType())
-				.title(mappedFrom.getTitle())
-				.dateOfPremiere(mappedFrom.getDateOfPremiere())
-				.firstWeekRevenue(mappedFrom.getFirstWeekRevenue())
-				.totalRevenue(mappedFrom.getTotalRevenue())
-				.budget(mappedFrom.getBudget())
-				.is3D(mappedFrom.getIs3D())
-				.length(mappedFrom.getLength())
-				.cast(actorMapper.mapOnEntities(mappedFrom.getCast()))
-				.studio(em.getReference(StudioEntity.class, mappedFrom.getStudio()))
+		MovieEntity mappedOn = MovieEntity.newBuilder()
+				.withId(mappedFrom.getId())
+				.withGenre(mappedFrom.getGenre())
+				.withType(mappedFrom.getType())
+				.withTitle(mappedFrom.getTitle())
+				.withDateOfPremiere(mappedFrom.getDateOfPremiere())
+				.withFirstWeekRevenue(mappedFrom.getFirstWeekRevenue())
+				.withTotalRevenue(mappedFrom.getTotalRevenue())
+				.withBudget(mappedFrom.getBudget())
+				.withIs3D(mappedFrom.getIs3D())
+				.withLength(mappedFrom.getLength())
+				.withCast(actorMapper.mapOnEntities(mappedFrom.getCast()))
+				.withStudio(em.getReference(StudioEntity.class, mappedFrom.getStudio()))
 				.build();
 		return mappedOn;
 	}
 	
 	public List<Long> mapOnIds(List<MovieEntity> entities){
 		return entities.stream().map(entity -> entity.getId()).collect(Collectors.toList());
+	}
+	
+	public List<MovieTO> mapOnTOs(List<MovieEntity> entities){
+		return entities.stream().map(entity -> mapOnTO(entity)).collect(Collectors.toList());
 	}
 	
 	public List<MovieEntity> mapOnEntities(List<Long> ids){

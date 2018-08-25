@@ -1,7 +1,7 @@
 package com.capgemini.domain;
 
-import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,21 +9,22 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
-
 @Entity
 @Table(name = "ACTORS")
 @EntityListeners(EntityListener.class)
-@SuperBuilder
 public class ActorEntity extends AbstractEntity {	
 	
-	@NonNull
 	@Column(name="first_name", nullable = false, length = 50)
 	private String firstName;
 	
@@ -33,14 +34,14 @@ public class ActorEntity extends AbstractEntity {
 	
 	@NonNull
 	@Column(name="birth_date",nullable = false)
-	private Date birthDate;
+	private LocalDate birthDate;
 	
 	@NonNull
 	@Column(nullable = false)
 	private String country;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-	private StudioEntity studio;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<CooperationEntity> cooperations;
 	
 	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "cast")
 	private List<MovieEntity> movies;
@@ -54,7 +55,7 @@ public class ActorEntity extends AbstractEntity {
 		this.lastName = builder.lastName;
 		this.birthDate = builder.birthDate;
 		this.country = builder.country;
-		this.studio = builder.studio;
+		this.cooperations = builder.cooperations;
 		this.movies = builder.movies;
 	}
 	
@@ -74,11 +75,11 @@ public class ActorEntity extends AbstractEntity {
 		this.lastName = lastName;
 	}
 
-	public Date getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
@@ -90,12 +91,13 @@ public class ActorEntity extends AbstractEntity {
 		this.country = country;
 	}
 
-	public StudioEntity getStudio() {
-		return studio;
+	
+	public List<CooperationEntity> getCooperations() {
+		return cooperations;
 	}
 
-	public void setStudio(StudioEntity studio) {
-		this.studio = studio;
+	public void setCooperations(List<CooperationEntity> cooperations) {
+		this.cooperations = cooperations;
 	}
 
 	public List<MovieEntity> getMovies() {
@@ -105,6 +107,7 @@ public class ActorEntity extends AbstractEntity {
 	public void setMovies(List<MovieEntity> movies) {
 		this.movies = movies;
 	}
+	
 	
 	public static Builder newBuilder(){
 		return new Builder();
@@ -118,9 +121,9 @@ public class ActorEntity extends AbstractEntity {
 		private Long version;
 		private String firstName;
 		private String lastName;
-		private Date birthDate;
+		private LocalDate birthDate;
 		private String country;
-		private StudioEntity studio;
+		private List<CooperationEntity> cooperations;
 		private List<MovieEntity> movies;
 		
 		public Builder withId (Long id){
@@ -153,7 +156,7 @@ public class ActorEntity extends AbstractEntity {
 			return this;
 		}
 		
-		public Builder withBirthDate (Date birthDate){
+		public Builder withBirthDate (LocalDate birthDate){
 			this.birthDate = birthDate;
 			return this;
 		}
@@ -163,8 +166,8 @@ public class ActorEntity extends AbstractEntity {
 			return this;
 		}
 		
-		public Builder withStudio (StudioEntity studio){
-			this.studio = studio;
+		public Builder withCooperations (List<CooperationEntity> cooperations){
+			this.cooperations = cooperations;
 			return this;
 		}
 		
