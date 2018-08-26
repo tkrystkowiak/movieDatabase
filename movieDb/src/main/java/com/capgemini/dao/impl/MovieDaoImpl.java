@@ -90,7 +90,7 @@ public class MovieDaoImpl implements CustomMovieDao {
 		return queryFactory.select(movie.totalRevenue.avg()).from(movie).fetchOne().intValue();
 	}
 
-	public Long findCombinedRevenueOfTopSellingMovies(int numberOfMovies) {
+	public Long findCombinedRevenueOfTopExpensiveMovies(int numberOfMovies) {
 		return queryFactory.select(movie.totalRevenue.sum()).from(movie).where(movie.totalRevenue.in(JPAExpressions
 				.select(movie.totalRevenue).from(movie).limit(numberOfMovies).orderBy(movie.totalRevenue.desc())))
 				.fetchCount();

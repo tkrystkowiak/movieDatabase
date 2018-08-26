@@ -4,10 +4,12 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.capgemini.dao.MovieDao;
+import com.capgemini.domain.SearchCriteria;
 import com.capgemini.exceptions.InvalidDataException;
 import com.capgemini.mappers.MovieMapper;
 import com.capgemini.service.MovieService;
@@ -40,6 +42,43 @@ public class MovieServiceImpl implements MovieService {
 		}
 		
 		movieDao.save(movieMapper.mapOnEntity(movie));
+	}
+
+	@Override
+	public List<MovieTO> findMovieByCriteria(SearchCriteria criteria) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer calculateAverageFirstWeekRevenue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer calculateAverageTotalRevenue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long calculateCombinedRevenueOfTopExpepensiveMovies(int NumberOfMovies) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long calculateCombinedMoviesBudgetInGivenPeriod(LocalDate startDate, LocalDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<MovieTO> findLongestMoviesByGivenStudioInGivenPeriod(long studioId, LocalDate startDate,
+			LocalDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

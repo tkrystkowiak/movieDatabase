@@ -1,5 +1,6 @@
 package com.capgemini.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,12 @@ public class ActorServiceImpl implements ActorService {
 			}
 		}
 
+	}
+
+	@Override
+	public List<ActorTO> findActorsWhoDidntActInGivenPeriod(LocalDate startDate, LocalDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 
