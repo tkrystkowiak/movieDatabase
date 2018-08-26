@@ -46,39 +46,33 @@ public class MovieServiceImpl implements MovieService {
 
 	@Override
 	public List<MovieTO> findMovieByCriteria(SearchCriteria criteria) {
-		// TODO Auto-generated method stub
-		return null;
+		return movieMapper.mapOnTOs(movieDao.findByCriteria(criteria));
 	}
 
 	@Override
 	public Integer calculateAverageFirstWeekRevenue() {
-		// TODO Auto-generated method stub
-		return null;
+		return movieDao.findAverageFirstWeekRevenue();
 	}
 
 	@Override
 	public Integer calculateAverageTotalRevenue() {
-		// TODO Auto-generated method stub
-		return null;
+		return movieDao.findAverageTotalRevenue();
 	}
 
 	@Override
-	public Long calculateCombinedRevenueOfTopExpepensiveMovies(int NumberOfMovies) {
-		// TODO Auto-generated method stub
-		return null;
+	public Long calculateCombinedRevenueOfTopExpepensiveMovies(int numberOfMovies) {
+		return movieDao.findCombinedRevenueOfTopExpensiveMovies(numberOfMovies);
 	}
 
 	@Override
 	public Long calculateCombinedMoviesBudgetInGivenPeriod(LocalDate startDate, LocalDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		return movieDao.findCobinedBudgetOfFilmsInGivenPeriod(startDate, endDate);
 	}
 
 	@Override
 	public List<MovieTO> findLongestMoviesByGivenStudioInGivenPeriod(long studioId, LocalDate startDate,
 			LocalDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		return movieMapper.mapOnTOs(movieDao.findLongestMovieWithGivenStudioAndPeriod(studioId, startDate, endDate));
 	}
 
 }

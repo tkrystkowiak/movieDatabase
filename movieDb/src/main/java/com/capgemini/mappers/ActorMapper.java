@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.capgemini.domain.ActorEntity;
+import com.capgemini.domain.MovieEntity;
 import com.capgemini.domain.StudioEntity;
 import com.capgemini.types.ActorTO;
+import com.capgemini.types.MovieTO;
 
 @Component
 public class ActorMapper {
@@ -58,6 +60,10 @@ public class ActorMapper {
 	
 	public List<Long> mapOnIds(List<ActorEntity> entities){
 		return entities.stream().map(entity -> entity.getId()).collect(Collectors.toList());
+	}
+	
+	public List<ActorTO> mapOnTOs(List<ActorEntity> entities){
+		return entities.stream().map(entity -> mapOnTO(entity)).collect(Collectors.toList());
 	}
 	
 	public List<ActorEntity> mapOnEntities(List<Long> ids){

@@ -6,11 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.capgemini.dao.ActorDao;
 import com.capgemini.dao.CooperationDao;
 import com.capgemini.dao.MovieDao;
 import com.capgemini.domain.CooperationEntity;
 import com.capgemini.domain.MovieEntity;
 import com.capgemini.exceptions.InvalidDataException;
+import com.capgemini.mappers.ActorMapper;
 import com.capgemini.mappers.MovieMapper;
 import com.capgemini.service.ActorService;
 import com.capgemini.types.ActorTO;
@@ -21,13 +23,16 @@ public class ActorServiceImpl implements ActorService {
 
 	private MovieDao movieDao;
 	private CooperationDao cooperationDao;
-	private MovieMapper movieMapper;
+	private ActorDao actorDao;
+	private ActorMapper actorMapper;
+	
 
 	@Autowired
-	public ActorServiceImpl(MovieDao movieDao, CooperationDao cooperationDao, MovieMapper movieMapper) {
+	public ActorServiceImpl(MovieDao movieDao, CooperationDao cooperationDao, ActorDao actorDao,ActorMapper actorMapper) {
 		this.movieDao = movieDao;
 		this.cooperationDao = cooperationDao;
-		this.movieMapper = movieMapper;
+		this.actorDao = actorDao;
+		this.actorMapper = actorMapper;
 	}
 
 	public void addActor(ActorTO actor) throws InvalidDataException {
@@ -63,8 +68,7 @@ public class ActorServiceImpl implements ActorService {
 
 	@Override
 	public List<ActorTO> findActorsWhoDidntActInGivenPeriod(LocalDate startDate, LocalDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		return actorMapper.mapOnTOs(actorDao.findActorsNotPlayingInGivenPeriod(startDate, endDate)) ;
 	}
 	
 

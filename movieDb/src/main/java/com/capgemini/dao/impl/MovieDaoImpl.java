@@ -73,7 +73,8 @@ public class MovieDaoImpl implements CustomMovieDao {
 		return queryFactory.select(movie).from(movie)
 				.where(movie.cast.contains(actor).and(movie.dateOfPremiere.between(endDate, startDate))).fetch();
 	}
-
+	
+	@Override
 	public List<MovieEntity> findByActorAndPeriodAndDifferentStudio(Long actorId, Long studioId, LocalDate startDate,
 			LocalDate endDate) {
 		ActorEntity actor = entityManager.getReference(ActorEntity.class, actorId);
@@ -81,26 +82,31 @@ public class MovieDaoImpl implements CustomMovieDao {
 		return queryFactory.select(movie).from(movie).where(movie.cast.contains(actor)
 				.and(movie.dateOfPremiere.between(endDate, startDate)).and(movie.studio.ne(studio))).fetch();
 	}
-
+	
+	@Override
 	public Integer findAverageFirstWeekRevenue() {
 		return queryFactory.select(movie.firstWeekRevenue.avg()).from(movie).fetchOne().intValue();
 	}
-
+	
+	@Override
 	public Integer findAverageTotalRevenue() {
 		return queryFactory.select(movie.totalRevenue.avg()).from(movie).fetchOne().intValue();
 	}
-
+	
+	@Override
 	public Long findCombinedRevenueOfTopExpensiveMovies(int numberOfMovies) {
 		return queryFactory.select(movie.totalRevenue.sum()).from(movie).where(movie.totalRevenue.in(JPAExpressions
 				.select(movie.totalRevenue).from(movie).limit(numberOfMovies).orderBy(movie.totalRevenue.desc())))
 				.fetchCount();
 	}
-
+	
+	@Override
 	public Long findCobinedBudgetOfFilmsInGivenPeriod(LocalDate startDate, LocalDate endDate) {
 		return queryFactory.select(movie.budget.sum()).from(movie)
 				.where(movie.dateOfPremiere.between(endDate, startDate)).fetchCount();
 	}
-
+	
+	@Override
 	public List<MovieEntity> findLongestMovieWithGivenStudioAndPeriod(Long studioId, LocalDate startDate,
 			LocalDate endDate) {
 		StudioEntity studio = entityManager.getReference(StudioEntity.class, studioId);
@@ -111,6 +117,7 @@ public class MovieDaoImpl implements CustomMovieDao {
 				.fetch();
 	}
 	
+	@Override
 	public List<Tuple> findNumerOfEachStudioMoviesInGivenPeriod(LocalDate startDate, LocalDate endDate){
 		return queryFactory.select(movie.studio,movie.count())
 				.from(movie)

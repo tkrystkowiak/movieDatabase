@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.capgemini.domain.MovieEntity;
 import com.capgemini.domain.SearchCriteria;
+import com.querydsl.core.Tuple;
 
 public interface CustomMovieDao {
 	
@@ -15,4 +16,16 @@ public interface CustomMovieDao {
 	List<MovieEntity> findByActorAndPeriod(Long actorId, LocalDate startDate, LocalDate endDate);
 	
 	List<MovieEntity> findByActorAndPeriodAndDifferentStudio(Long actorId,Long studioId, LocalDate startDate, LocalDate endDate);
+	
+	Integer findAverageFirstWeekRevenue();
+
+	Integer findAverageTotalRevenue();
+
+	Long findCombinedRevenueOfTopExpensiveMovies(int numberOfMovies);
+
+	Long findCobinedBudgetOfFilmsInGivenPeriod(LocalDate startDate, LocalDate endDate);
+
+	List<MovieEntity> findLongestMovieWithGivenStudioAndPeriod(Long studioId, LocalDate startDate, LocalDate endDate);
+
+	List<Tuple> findNumerOfEachStudioMoviesInGivenPeriod(LocalDate startDate, LocalDate endDate);
 }
