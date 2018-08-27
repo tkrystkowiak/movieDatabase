@@ -29,7 +29,7 @@ public class ActorEntity extends AbstractEntity {
 	@Column(nullable = false)
 	private String country;
 	
-	@OneToMany( mappedBy="actor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany( mappedBy="actor",cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private List<CooperationEntity> cooperations;
 	
 	@ManyToMany(cascade = CascadeType.MERGE, mappedBy = "cast")

@@ -46,6 +46,21 @@ public class MovieTO {
 		this.cast = builder.cast;
 		this.studio = builder.studio;
 	}
+	
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
+	public void setThreeD(Boolean threeD) {
+		this.threeD = threeD;
+	}
+
+
 
 	public Long getId() {
 		return id;
@@ -105,10 +120,6 @@ public class MovieTO {
 
 	public Boolean getThreeD() {
 		return threeD;
-	}
-
-	public void setIs3D(Boolean threeD) {
-		this.threeD = threeD;
 	}
 
 	public Integer getBudget() {
@@ -248,5 +259,6 @@ public class MovieTO {
 		}
 		
 	}
+
 	
 }

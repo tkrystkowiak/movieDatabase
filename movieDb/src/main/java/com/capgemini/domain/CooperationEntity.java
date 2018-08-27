@@ -18,7 +18,7 @@ public class CooperationEntity extends AbstractEntity {
 	@ManyToOne(cascade = {CascadeType.MERGE,CascadeType.REFRESH},fetch = FetchType.LAZY, optional = false)
 	private StudioEntity studio;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(cascade = {CascadeType.MERGE,CascadeType.REFRESH},fetch = FetchType.LAZY, optional = false)
 	private ActorEntity actor;
 	
 	@Column(nullable  = false)

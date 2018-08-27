@@ -3,6 +3,8 @@ package com.capgemini.service.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.OptimisticLockException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +36,44 @@ public class ActorServiceImpl implements ActorService {
 		this.actorDao = actorDao;
 		this.actorMapper = actorMapper;
 	}
-
+	
+	@Override
 	public void addActor(ActorTO actor) throws InvalidDataException {
+		
+		validateMovies(actor.getMovies());
 
-		List<Long> movies = actor.getMovies();
+		if (actor.getCooperations() != null) {
+			throw new InvalidDataException("You need to add actor first to assign cooperations");
+		}
+		
+		actorDao.save(actorMapper.mapOnEntity(actor));
 
+	}
+	
+	@Override
+	public void updateActor(ActorTO actor) throws InvalidDataException {
+		if(actorDao.findOne(actor.getId())==null){
+			addActor(actor);
+		}
+		if(actor.getVersion()!=actorDao.findOne(actor.getId()).getVersion())
+		{
+			throw new OptimisticLockException();
+		}
+		validateMovies(actor.getMovies());
+		actorDao.save(actorMapper.mapOnEntity(actor));
+	}
+
+	@Override
+	public void deleteActor(Long actor) {
+		actorDao.delete(actor);
+	}
+	
+	@Override
+	public List<ActorTO> findActorsWhoDidntActInGivenPeriod(LocalDate startDate, LocalDate endDate) {
+		return actorMapper.mapOnTOs(actorDao.findActorsNotPlayingInGivenPeriod(startDate, endDate));
+	}
+	
+	private void validateMovies(List<Long> movies) throws InvalidDataException{
 		if (movies != null) {
 			for (Long movieId : movies) {
 				MovieEntity movie = movieDao.findOne(movieId);
@@ -50,18 +85,6 @@ public class ActorServiceImpl implements ActorService {
 				}
 			}
 		}
-
-		if (actor.getCooperations() != null) {
-			throw new InvalidDataException("You need to add actor first to assign cooperations");
-		}
-		
-		actorDao.save(actorMapper.mapOnEntity(actor));
-
-	}
-
-	@Override
-	public List<ActorTO> findActorsWhoDidntActInGivenPeriod(LocalDate startDate, LocalDate endDate) {
-		return actorMapper.mapOnTOs(actorDao.findActorsNotPlayingInGivenPeriod(startDate, endDate));
 	}
 
 }

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
@@ -278,6 +279,50 @@ public class MovieServiceTest {
 		//then
 		assertEquals(1,result.size());
 		assertEquals("Blade Runner",result.get(0).getTitle());
+	}
+	
+	@Test
+	public void testShouldTHrowOptimisticLockingWhenVersionMismatch() throws InvalidDataException{
+		//given
+		
+		MovieEntity movie1 = MovieEntity.newBuilder()
+				.withGenre("Sci-Fi")
+				.withType("Technicolor")
+				.withTitle("Matrix")
+				.withCountry("Polska")
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
+				.withFirstWeekRevenue(2)
+				.withTotalRevenue(5)
+				.withBudget(3)
+				.withThreeD(false)
+				.withLength(120)
+				.build();
+		
+		Long movieId = movieDao.save(movie1).getId();
+		
+		MovieTO movie2 = MovieTO.newBuilder()
+				.withId(movieId)
+				.withGenre("Sci-Fi")
+				.withType("Technicolor")
+				.withTitle("Blade Runner")
+				.withCountry("Polska")
+				.withDateOfPremiere(LocalDate.of(2018,03,11))
+				.withFirstWeekRevenue(2)
+				.withTotalRevenue(5)
+				.withBudget(3)
+				.withThreeD(false)
+				.withLength(150)
+				.build();
+		boolean thrown = false;
+		//when
+		try{
+			movieService.updateMovie(movie2);
+		}
+		catch(OptimisticLockException e){
+			thrown = true;
+		}
+		//then
+		assertTrue(thrown);
 	}
 	
 	MovieTO toSave = MovieTO.newBuilder()

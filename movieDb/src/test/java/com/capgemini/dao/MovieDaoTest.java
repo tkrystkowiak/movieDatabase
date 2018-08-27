@@ -90,6 +90,21 @@ public class MovieDaoTest {
 				.withStudio(studio)
 				.build();
 		movie = movieDao.save(movie);
+		
+		MovieEntity movie2 = MovieEntity.newBuilder()
+				.withGenre("Dramat")
+				.withType("Technicolor")
+				.withTitle("BladeRunner")
+				.withCountry("Polska")
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
+				.withFirstWeekRevenue(2)
+				.withTotalRevenue(5)
+				.withBudget(3)
+				.withThreeD(false)
+				.withLength(120)
+				.withStudio(studio)
+				.build();
+		movieDao.save(movie2);
 
 		SearchCriteria criteria = SearchCriteria.newBuilder()
 				.withType("Technicolor")
@@ -104,9 +119,59 @@ public class MovieDaoTest {
 
 		List<MovieEntity> actual = movieDao.findByCriteria(criteria);
 		// then
+		assertEquals(1,actual.size());
 		assertEquals("Matrix", actual.get(0).getTitle());
 
 	}
+	
+	@Test
+	public void testShouldFindByCriteriaWithAllNull() throws ParseException {
+		StudioEntity studio = StudioEntity.newBuilder()
+				.withName("Super")
+				.withCountry("Polska")
+				.build();
+		
+		studio = studioDao.save(studio);
+		
+		MovieEntity movie1 = MovieEntity.newBuilder()
+				.withGenre("Sci-Fi")
+				.withType("Technicolor")
+				.withTitle("Matrix")
+				.withCountry("Polska")
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
+				.withFirstWeekRevenue(2)
+				.withTotalRevenue(5)
+				.withBudget(3)
+				.withThreeD(false)
+				.withLength(120)
+				.withStudio(studio)
+				.build();
+		movieDao.save(movie1);
+		
+		MovieEntity movie2 = MovieEntity.newBuilder()
+				.withGenre("Dramat")
+				.withType("Technicolor")
+				.withTitle("BladeRunner")
+				.withCountry("Polska")
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
+				.withFirstWeekRevenue(2)
+				.withTotalRevenue(5)
+				.withBudget(3)
+				.withThreeD(false)
+				.withLength(120)
+				.withStudio(studio)
+				.build();
+		movieDao.save(movie2);
+
+		SearchCriteria criteria = SearchCriteria.newBuilder()
+				.build();
+
+		List<MovieEntity> actual = movieDao.findByCriteria(criteria);
+		// then
+		assertEquals(2,actual.size());
+		assertEquals("Matrix", actual.get(0).getTitle());
+	}
+	
 	
 	@Test
 	public void testShouldFindByCriteriaWithOnlyTypeFilledFilled() throws ParseException {
@@ -124,6 +189,20 @@ public class MovieDaoTest {
 				.withLength(120)
 				.build();
 		movie = movieDao.save(movie);
+		
+		MovieEntity movie2 = MovieEntity.newBuilder()
+				.withGenre("Dramat")
+				.withType("SampeType")
+				.withTitle("BladeRunner")
+				.withCountry("Polska")
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
+				.withFirstWeekRevenue(2)
+				.withTotalRevenue(5)
+				.withBudget(3)
+				.withThreeD(false)
+				.withLength(120)
+				.build();
+		movieDao.save(movie2);
 
 		SearchCriteria criteria = SearchCriteria.newBuilder()
 				.withType("Technicolor")

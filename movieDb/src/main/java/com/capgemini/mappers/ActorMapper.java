@@ -32,15 +32,15 @@ public class ActorMapper {
 		if(mappedFrom == null){
 			return null;
 		}
-		ActorTO mappedOn = ActorTO.builder()
-				.id(mappedFrom.getId())
-				.version(mappedFrom.getVersion())
-				.firstName(mappedFrom.getFirstName())
-				.lastName(mappedFrom.getLastName())
-				.birthDate(mappedFrom.getBirthDate())
-				.country(mappedFrom.getCountry())
-				.cooperations(cooperationMapper.mapOnIds(mappedFrom.getCooperations()))
-				.movies(mapMovieEntitiesOnIds(mappedFrom.getMovies()))
+		ActorTO mappedOn = ActorTO.newBuilder()
+				.withId(mappedFrom.getId())
+				.withVersion(mappedFrom.getVersion())
+				.withFirstName(mappedFrom.getFirstName())
+				.withLastName(mappedFrom.getLastName())
+				.withBirthDate(mappedFrom.getBirthDate())
+				.withCountry(mappedFrom.getCountry())
+				.withCooperations(cooperationMapper.mapOnIds(mappedFrom.getCooperations()))
+				.withMovies(mapMovieEntitiesOnIds(mappedFrom.getMovies()))
 				.build();
 		return mappedOn;
 	}

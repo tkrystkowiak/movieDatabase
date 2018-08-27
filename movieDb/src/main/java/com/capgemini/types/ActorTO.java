@@ -14,34 +14,41 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
+import com.capgemini.domain.ActorEntity;
 import com.capgemini.domain.CooperationEntity;
 import com.capgemini.domain.MovieEntity;
 
 import lombok.Builder;
 import lombok.NonNull;
 
-@Builder
 public class ActorTO {
 	
 	private Long version;
 	
 	private Long id;
 	
-	@NonNull
 	private String firstName;
 	
-	@NonNull
 	private String lastName;
 	
-	@NonNull
 	private LocalDate birthDate;
 	
-	@NonNull
 	private String country;
 	
 	private List<Long> cooperations;
 	
 	private List<Long> movies;
+	
+	public ActorTO(Builder builder) {
+		this.version = builder.version;
+		this.id = builder.id;
+		this.firstName = builder.firstName;
+		this.lastName = builder.lastName;
+		this.birthDate = builder.birthDate;
+		this.country = builder.country;
+		this.cooperations = builder.cooperations;
+		this.movies = builder.movies;
+	}
 
 	public Long getVersion() {
 		return version;
@@ -105,6 +112,67 @@ public class ActorTO {
 
 	public void setMovies(List<Long> movies) {
 		this.movies = movies;
+	}
+	
+	public static Builder newBuilder(){
+		return new Builder();
+	}
+	
+	public static class Builder{
+		
+		private Long id;
+		private Long version;
+		private String firstName;
+		private String lastName;
+		private LocalDate birthDate;
+		private String country;
+		private List<Long> cooperations;
+		private List<Long> movies;
+		
+		public Builder withId (Long id){
+			this.id = id;
+			return this;
+		}
+		
+		public Builder withVersion (Long version){
+			this.version = version;
+			return this;
+		}
+		
+		public Builder withFirstName (String firstName){
+			this.firstName = firstName;
+			return this;
+		}
+		
+		public Builder withLastName (String lastName){
+			this.lastName = lastName;
+			return this;
+		}
+		
+		public Builder withBirthDate (LocalDate birthDate){
+			this.birthDate = birthDate;
+			return this;
+		}
+		
+		public Builder withCountry (String country){
+			this.country = country;
+			return this;
+		}
+		
+		public Builder withCooperations (List<Long> cooperations){
+			this.cooperations = cooperations;
+			return this;
+		}
+		
+		public Builder withMovies (List<Long> movies){
+			this.movies = movies;
+			return this;
+		}
+		
+		public ActorTO build(){
+			return new ActorTO(this);
+		}
+		
 	}
 	
 }

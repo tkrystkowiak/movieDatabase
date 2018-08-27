@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -96,25 +95,63 @@ public class CooperationDaoTest {
 				.withExpirationDate(LocalDate.of(2015,03,12))
 				.build();
 		List<CooperationEntity> coops = new ArrayList<CooperationEntity>();
+		coops.add(coop);
 		
 		studioDao.save(studio);
 		Long actorId = actorDao.save(actor).getId();
 		cooperationDao.save(coop);
 		
-		em.flush();
-		
 		ActorEntity modified = actorDao.findOne(actorId);
 		modified.setCooperations(coops);
 		actorDao.save(modified);
-		
-		em.flush();
-		
+
 		//when
 		actorDao.delete(actorId);
 		//then
 		assertTrue(cooperationDao.findAll().isEmpty());
 		assertEquals(1,studioDao.findAll().size());
 		assertTrue(actorDao.findAll().isEmpty());
+
+	}
+	
+	@Test
+	public void testShouldDeleteCooperationWhenDeletingStudioButNotActor(){
+		//given
+		StudioEntity studio = StudioEntity.newBuilder()
+				.withName("Extra")
+				.withCountry("Polska")
+				.build();
+		
+		ActorEntity actor = ActorEntity.newBuilder()
+				.withFirstName("Tom")
+				.withLastName("Hardy")
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
+				.build();
+		
+		CooperationEntity coop = CooperationEntity.newBuilder()
+				.withActor(actor)
+				.withStudio(studio)
+				.withEffectiveDate(LocalDate.of(2012,03,12))
+				.withExpirationDate(LocalDate.of(2015,03,12))
+				.build();
+		List<CooperationEntity> coops = new ArrayList<CooperationEntity>();
+		coops.add(coop);
+		
+		Long studioId =studioDao.save(studio).getId();
+		actorDao.save(actor);
+		cooperationDao.save(coop);
+		
+		StudioEntity modified = studioDao.findOne(studioId);
+		modified.setCooperation(coops);
+		studioDao.save(modified);
+
+		//when
+		studioDao.delete(studioId);
+		//then
+		assertTrue(cooperationDao.findAll().isEmpty());
+		assertTrue(studioDao.findAll().isEmpty());
+		assertEquals(1,actorDao.findAll().size());
 
 	}
 	

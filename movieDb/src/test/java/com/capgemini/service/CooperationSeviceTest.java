@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
@@ -197,6 +198,144 @@ public class CooperationSeviceTest {
 		}
 		//then
 		assertTrue(thrown);
+	}
+	
+	@Test
+	public void shouldUpdateCooperation() throws InvalidDataException{
+		//given
+		StudioEntity studio = StudioEntity.newBuilder()
+				.withName("Super")
+				.withCountry("Polska")
+				.build();
+		
+		ActorEntity actorTom = ActorEntity.newBuilder()
+				.withFirstName("Tom")
+				.withLastName("Hardy")
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
+				.build();
+		
+		ActorEntity actorJack = ActorEntity.newBuilder()
+				.withFirstName("Jack")
+				.withLastName("Hardy")
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
+				.build();
+		
+		Long studioId = studioDao.save(studio).getId();
+		actorDao.save(actorTom).getId();
+		Long actorJackId = actorDao.save(actorJack).getId();
+		
+		CooperationEntity coop1 = CooperationEntity.newBuilder()
+				.withActor(actorTom)
+				.withStudio(studio)
+				.withEffectiveDate(LocalDate.of(1983,03,12))
+				.withExpirationDate(LocalDate.of(1985,04,12))
+				.build();
+		Long coopid = cooperationDao.save(coop1).getId();
+		CooperationTO coop2 = CooperationTO.newBuilder()
+				.withId(coopid)
+				.withVersion(cooperationDao.findOne(coopid).getVersion())
+				.withActor(actorJackId)
+				.withStudio(studioId)
+				.withEffectiveDate(LocalDate.of(1983,03,12))
+				.withExpirationDate(LocalDate.of(1985,04,12))
+				.build();
+		//when
+		
+		cooperationService.update(coop2);
+		
+		//then
+		assertEquals(1,cooperationDao.findAll().size());
+		assertEquals("Jack",cooperationDao.findAll().get(0).getActor().getFirstName());
+	}
+	
+	@Test
+	public void shouldThrowOptimisticLockExceptionWhenIncorrectVersions() throws InvalidDataException{
+		//given
+		StudioEntity studio = StudioEntity.newBuilder()
+				.withName("Super")
+				.withCountry("Polska")
+				.build();
+		
+		ActorEntity actorTom = ActorEntity.newBuilder()
+				.withFirstName("Tom")
+				.withLastName("Hardy")
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
+				.build();
+		
+		ActorEntity actorJack = ActorEntity.newBuilder()
+				.withFirstName("Jack")
+				.withLastName("Hardy")
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
+				.build();
+		
+		Long studioId = studioDao.save(studio).getId();
+		actorDao.save(actorTom).getId();
+		Long actorJackId = actorDao.save(actorJack).getId();
+		
+		CooperationEntity coop1 = CooperationEntity.newBuilder()
+				.withActor(actorTom)
+				.withStudio(studio)
+				.withEffectiveDate(LocalDate.of(1983,03,12))
+				.withExpirationDate(LocalDate.of(1985,04,12))
+				.build();
+		Long coopid = cooperationDao.save(coop1).getId();
+		CooperationTO coop2 = CooperationTO.newBuilder()
+				.withId(coopid)
+				
+				.withActor(actorJackId)
+				.withStudio(studioId)
+				.withEffectiveDate(LocalDate.of(1983,03,12))
+				.withExpirationDate(LocalDate.of(1985,04,12))
+				.build();
+		boolean thrown = false;
+		//when
+		try{
+		cooperationService.update(coop2);
+		}
+		catch(OptimisticLockException e){
+				thrown = true;
+		}
+		//then
+		assertTrue(thrown);
+	}
+	
+	@Test
+	public void shouldDeleteCooperation() throws InvalidDataException{
+		//given
+		StudioEntity studio = StudioEntity.newBuilder()
+				.withName("Super")
+				.withCountry("Polska")
+				.build();
+		
+		ActorEntity actorTom = ActorEntity.newBuilder()
+				.withFirstName("Tom")
+				.withLastName("Hardy")
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
+				.build();
+		
+		studioDao.save(studio).getId();
+		actorDao.save(actorTom).getId();
+	
+		
+		CooperationEntity coop1 = CooperationEntity.newBuilder()
+				.withActor(actorTom)
+				.withStudio(studio)
+				.withEffectiveDate(LocalDate.of(1983,03,12))
+				.withExpirationDate(LocalDate.of(1985,04,12))
+				.build();
+		Long coopid = cooperationDao.save(coop1).getId();
+		
+		//when
+	
+		cooperationService.delete(coopid);
+	
+		//then
+		assertTrue(cooperationDao.findAll().isEmpty());
 	}
 	
 }

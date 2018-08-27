@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.OptimisticLockException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,19 +30,7 @@ public class MovieServiceImpl implements MovieService {
 
 	@Override
 	public void addMovie(MovieTO movie) throws InvalidDataException, ParseException {
-		if(movie.getFirstWeekRevenue()>movie.getTotalRevenue()){
-			throw new InvalidDataException("First week revenue cannot be bigger than total");
-		}
-		
-		LocalDate premiere = movie.getDateOfPremiere();
-		int year = premiere.getYear();
-		LocalDate startDate = LocalDate.of(year, 1, 1);
-		LocalDate endDate = LocalDate.of(year, 12, 31);
-		
-		if(!movieDao.findByTitleCountryAndDate(movie.getTitle(), movie.getCountry(), startDate, endDate).isEmpty()){
-			throw new InvalidDataException("There can be only one movie with identical title, country and date of premiere");
-		}
-		
+		validate(movie,false);
 		movieDao.save(movieMapper.mapOnEntity(movie));
 	}
 
@@ -73,6 +63,46 @@ public class MovieServiceImpl implements MovieService {
 	public List<MovieTO> findLongestMoviesByGivenStudioInGivenPeriod(long studioId, LocalDate startDate,
 			LocalDate endDate) {
 		return movieMapper.mapOnTOs(movieDao.findLongestMovieWithGivenStudioAndPeriod(studioId, startDate, endDate));
+	}
+
+	@Override
+	public void updateMovie(MovieTO movie) throws InvalidDataException {
+		if (movie.getVersion() != movieDao.findOne(movie.getId()).getVersion()) {
+			throw new OptimisticLockException();
+		}
+		validate(movie,true);
+		movieDao.save(movieMapper.mapOnEntity(movie));
+	}
+
+	@Override
+	public void deleteMovie(Long movie) {
+		movieDao.delete(movie);
+
+	}
+
+	private void validate(MovieTO movie, boolean isUpdating) throws InvalidDataException {
+		if (movie.getFirstWeekRevenue() > movie.getTotalRevenue()) {
+			throw new InvalidDataException("First week revenue cannot be bigger than total");
+		}
+
+		LocalDate premiere = movie.getDateOfPremiere();
+		int year = premiere.getYear();
+		LocalDate startDate = LocalDate.of(year, 1, 1);
+		LocalDate endDate = LocalDate.of(year, 12, 31);
+
+		if (isUpdating) {
+			if (movieDao.findByTitleCountryAndDate(movie.getTitle(), movie.getCountry(), startDate, endDate)
+					.size() > 1) {
+				throw new InvalidDataException(
+						"There can be only one movie with identical title, country and date of premiere");
+			}
+		} else {
+			if (!movieDao.findByTitleCountryAndDate(movie.getTitle(), movie.getCountry(), startDate, endDate)
+					.isEmpty()) {
+				throw new InvalidDataException(
+						"There can be only one movie with identical title, country and date of premiere");
+			}
+		}
 	}
 
 }

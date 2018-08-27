@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
@@ -24,6 +25,7 @@ import com.capgemini.domain.ActorEntity;
 import com.capgemini.domain.CooperationEntity;
 import com.capgemini.domain.MovieEntity;
 import com.capgemini.exceptions.InvalidDataException;
+import com.capgemini.mappers.ActorMapper;
 import com.capgemini.service.impl.ActorServiceImpl;
 import com.capgemini.types.ActorTO;
 
@@ -51,6 +53,9 @@ public class ActorServiceTest {
 	@Autowired
 	CooperationDao cooperationDao;
 	
+	@Autowired
+	ActorMapper actorMapper;
+	
 	@Test
 	public void testShouldAddActorToDatabase() throws InvalidDataException{
 		//when
@@ -69,11 +74,12 @@ public class ActorServiceTest {
 		movieIds.add(movieDao.save(generateSampleMovieWithTitleAndPremiere("Blade Runner", LocalDate.of(2018, 05, 15))).getId());
 		movieIds.add(movieDao.save(generateSampleMovieWithTitleAndPremiere("Avatar", LocalDate.of(2018, 06, 19))).getId());
 		movieIds.add(movieDao.save(generateSampleMovieWithTitleAndPremiere("Infiltration", LocalDate.of(2018, 04, 16))).getId());
-		ActorTO toSave = ActorTO.builder().firstName("Tom")
-				.lastName("Hardy")
-				.birthDate(LocalDate.of(1983,03,12))
-				.country("England")
-				.movies(movieIds)
+		ActorTO toSave = ActorTO.newBuilder()
+				.withFirstName("Tom")
+				.withLastName("Hardy")
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
+				.withMovies(movieIds)
 				.build();
 		boolean thrown = false;
 		//when
@@ -96,11 +102,12 @@ public class ActorServiceTest {
 		movieIds.add(movieDao.save(generateSampleMovieWithTitleAndPremiere("Matrix", LocalDate.of(2018, 06, 15))).getId());
 		movieIds.add(movieDao.save(generateSampleMovieWithTitleAndPremiere("Blade Runner", LocalDate.of(2018, 05, 15))).getId());
 		movieIds.add(movieDao.save(generateSampleMovieWithTitleAndPremiere("Avatar", LocalDate.of(2018, 06, 19))).getId());
-		ActorTO toSave = ActorTO.builder().firstName("Tom")
-				.lastName("Hardy")
-				.birthDate(LocalDate.of(1983,03,12))
-				.country("England")
-				.movies(movieIds)
+		ActorTO toSave = ActorTO.newBuilder()
+				.withFirstName("Tom")
+				.withLastName("Hardy")
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
+				.withMovies(movieIds)
 				.build();
 		//when
 		actorService.addActor(toSave);
@@ -116,11 +123,12 @@ public class ActorServiceTest {
 		List<Long> cooperationIds = new ArrayList<Long>();
 		
 		
-		ActorTO toSave = ActorTO.builder().firstName("Tom")
-				.lastName("Hardy")
-				.birthDate(LocalDate.of(1983,03,12))
-				.country("England")
-				.cooperations(cooperationIds)
+		ActorTO toSave = ActorTO.newBuilder()
+				.withFirstName("Tom")
+				.withLastName("Hardy")
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
+				.withCooperations(cooperationIds)
 				.build();
 		boolean thrown = false;
 		//when
@@ -246,6 +254,78 @@ public class ActorServiceTest {
 			assertEquals("Benedict",result.get(0).getFirstName());
 	}
 	
+	@Test
+	public void testShouldUpdateActor() throws InvalidDataException{
+			//given
+			ActorEntity tom = ActorEntity.newBuilder()
+					.withFirstName("Tom")
+					.withLastName("Hardy")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.build();
+		
+			Long actorId = actorDao.save(tom).getId();	
+			
+			ActorEntity modified = actorDao.findOne(actorId);
+			
+			modified.setFirstName("Benedict");
+			//when
+			actorService.updateActor(actorMapper.mapOnTO(modified));
+			//then
+			assertEquals(1,actorDao.findAll().size());;
+			assertEquals("Benedict",actorDao.findAll().get(0).getFirstName());
+	}
+	
+	@Test
+	public void testShouldThrowExceptionWhenMissMatchVersion() throws InvalidDataException{
+			//given
+			ActorEntity tom = ActorEntity.newBuilder()
+					.withFirstName("Tom")
+					.withLastName("Hardy")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.build();
+		
+			Long actorId = actorDao.save(tom).getId();	
+			
+			ActorTO toUpdate = ActorTO.newBuilder()
+					.withId(actorId)
+					.withFirstName("Benedict")
+					.withLastName("Hardy")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.withVersion(5L)
+					.build();
+			
+			boolean thrown = false;
+			//when
+			try{
+			actorService.updateActor(toUpdate);
+			}
+			catch(OptimisticLockException e){
+				thrown = true;
+			}
+			//then
+			assertTrue(thrown);
+	}
+	
+	@Test
+	public void testShouldDeleteActor() throws InvalidDataException{
+			//given
+			ActorEntity tom = ActorEntity.newBuilder()
+					.withFirstName("Tom")
+					.withLastName("Hardy")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.build();
+		
+			Long actorId = actorDao.save(tom).getId();	
+			//when
+			actorService.deleteActor(actorId);
+			//then
+			assertTrue(actorDao.findAll().isEmpty());
+	}
+	
 	public MovieEntity generateSampleMovieWithTitleAndPremiere(String title, LocalDate premiere){
 		return MovieEntity.newBuilder()
 				.withGenre("Sci-Fi")
@@ -262,11 +342,11 @@ public class ActorServiceTest {
 	}
 	
 	private ActorTO generateActorTO(String firstName,String lastName){
-		return ActorTO.builder()
-				.firstName(firstName)
-				.lastName(lastName)
-				.birthDate(LocalDate.of(1983,03,12))
-				.country("England")
+		return ActorTO.newBuilder()
+				.withFirstName(firstName)
+				.withLastName(lastName)
+				.withBirthDate(LocalDate.of(1983,03,12))
+				.withCountry("England")
 				.build();
 	}
 	

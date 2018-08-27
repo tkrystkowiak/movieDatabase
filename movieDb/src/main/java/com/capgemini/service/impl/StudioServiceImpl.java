@@ -3,6 +3,8 @@ package com.capgemini.service.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.OptimisticLockException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,19 @@ public class StudioServiceImpl implements StudioService {
 		LocalDate startDate = LocalDate.of(year, 1, 1);
 		LocalDate endDate = LocalDate.of(year, 12, 31);
 		return movieDao.findNumerOfEachStudioMoviesInGivenPeriod(startDate, endDate);
+	}
+
+	@Override
+	public void updateStudio(StudioTO studio) {
+		if (studio.getVersion() != studioDao.findOne(studio.getId()).getVersion()) {
+			throw new OptimisticLockException();
+		}
+		studioDao.save(studioMapper.mapOnEntity(studio));
+	}
+
+	@Override
+	public void deleteStudio(Long studio) {
+		studioDao.delete(studio);
 	}
 
 }
