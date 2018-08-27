@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.capgemini.dao.MovieDao;
 import com.capgemini.dao.StudioDao;
@@ -12,6 +13,7 @@ import com.capgemini.service.StudioService;
 import com.capgemini.types.StudioTO;
 import com.querydsl.core.Tuple;
 
+@Service
 public class StudioServiceImpl implements StudioService {
 	
 	private StudioDao studioDao;

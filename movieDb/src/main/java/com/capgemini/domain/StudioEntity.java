@@ -42,7 +42,7 @@ public class StudioEntity extends AbstractEntity {
 	}
 	
 	public StudioEntity(Builder builder) {
-		super(builder.version,builder.id, builder.persistTime, builder.updateTime);
+		super(builder.version,builder.id);
 		this.name = builder.name;
 		this.country = builder.country;
 		this.movies = builder.movies;
@@ -88,8 +88,6 @@ public class StudioEntity extends AbstractEntity {
 	public static class Builder{
 		
 		private Long id;
-		private Time persistTime;
-		private Time updateTime;
 		private Long version;
 		private String name;
 		private String country;
@@ -98,16 +96,6 @@ public class StudioEntity extends AbstractEntity {
 		
 		public Builder withId (Long id){
 			this.id = id;
-			return this;
-		}
-		
-		public Builder withPersistTime (Time persistTime){
-			this.persistTime = persistTime;
-			return this;
-		}
-		
-		public Builder withUpdateTime (Time updateTime){
-			this.updateTime = updateTime;
 			return this;
 		}
 		

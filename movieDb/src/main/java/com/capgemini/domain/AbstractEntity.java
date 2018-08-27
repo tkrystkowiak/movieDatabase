@@ -15,7 +15,7 @@ import javax.persistence.Version;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;;
 
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
 public abstract class AbstractEntity {
 	
 	@Version 
@@ -34,11 +34,9 @@ public abstract class AbstractEntity {
 	public AbstractEntity() {
 	}
 
-	public AbstractEntity(Long version, Long id, Time persistTime, Time updateTime) {
+	public AbstractEntity(Long version, Long id) {
 		this.version = version;
 		this.id = id;
-		this.persistTime = persistTime;
-		this.updateTime = updateTime;
 	}
 
 	public Time getPersistTime() {

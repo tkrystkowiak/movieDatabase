@@ -13,19 +13,21 @@ public interface CustomMovieDao {
 	
 	List<MovieEntity> findWithQueryDSL(String title);
 	
-	List<MovieEntity> findByActorAndPeriod(Long actorId, LocalDate startDate, LocalDate endDate);
-	
 	List<MovieEntity> findByActorAndPeriodAndDifferentStudio(Long actorId,Long studioId, LocalDate startDate, LocalDate endDate);
 	
-	Integer findAverageFirstWeekRevenue();
+	Double findAverageFirstWeekRevenue();
 
-	Integer findAverageTotalRevenue();
+	Double findAverageTotalRevenue();
 
-	Long findCombinedRevenueOfTopExpensiveMovies(int numberOfMovies);
+	Integer findCombinedRevenueOfTopExpensiveMovies(int numberOfMovies);
 
-	Long findCobinedBudgetOfFilmsInGivenPeriod(LocalDate startDate, LocalDate endDate);
+	Integer findCobinedBudgetOfFilmsInGivenPeriod(LocalDate startDate, LocalDate endDate);
 
 	List<MovieEntity> findLongestMovieWithGivenStudioAndPeriod(Long studioId, LocalDate startDate, LocalDate endDate);
 
 	List<Tuple> findNumerOfEachStudioMoviesInGivenPeriod(LocalDate startDate, LocalDate endDate);
+
+	List<MovieEntity> findTopExpensiveMovies(int numberOfMovies);
+
+	List<MovieEntity> findMoviesByPeriodWithMatchingIds(List<Long> movieIds, LocalDate startDate, LocalDate endDate);
 }

@@ -21,16 +21,17 @@ public class ActorMapper {
 	@PersistenceContext
 	EntityManager em;
 	
-	private MovieMapper movieMapper;
 	private CooperationMapper cooperationMapper;
 	
 	@Autowired
-	public ActorMapper(MovieMapper movieMapper, CooperationMapper cooperationMapper) {
-		this.movieMapper = movieMapper;
+	public ActorMapper(CooperationMapper cooperationMapper) {
 		this.cooperationMapper = cooperationMapper;
 	}
 
 	public ActorTO mapOnTO(ActorEntity mappedFrom){
+		if(mappedFrom == null){
+			return null;
+		}
 		ActorTO mappedOn = ActorTO.builder()
 				.id(mappedFrom.getId())
 				.version(mappedFrom.getVersion())
@@ -39,12 +40,15 @@ public class ActorMapper {
 				.birthDate(mappedFrom.getBirthDate())
 				.country(mappedFrom.getCountry())
 				.cooperations(cooperationMapper.mapOnIds(mappedFrom.getCooperations()))
-				.movies(movieMapper.mapOnIds(mappedFrom.getMovies()))
+				.movies(mappedFrom.getMovies().stream().map(entity -> entity.getId()).collect(Collectors.toList()))
 				.build();
 		return mappedOn;
 	}
 	
 	public ActorEntity mapOnEntity(ActorTO mappedFrom){
+		if(mappedFrom == null){
+			return null;
+		}
 		ActorEntity mappedOn = ActorEntity.newBuilder()
 				.withId(mappedFrom.getId())
 				.withVersion(mappedFrom.getVersion())
@@ -53,20 +57,36 @@ public class ActorMapper {
 				.withBirthDate(mappedFrom.getBirthDate())
 				.withCountry(mappedFrom.getCountry())
 				.withCooperations(cooperationMapper.mapOnEntities(mappedFrom.getCooperations()))
-				.withMovies(movieMapper.mapOnEntities(mappedFrom.getMovies()))
+				.withMovies(mapMovieIdsOnEntities(mappedFrom.getMovies()))
 				.build();
 		return mappedOn;
 	}
 	
 	public List<Long> mapOnIds(List<ActorEntity> entities){
+		if(entities == null){
+			return null;
+		}
 		return entities.stream().map(entity -> entity.getId()).collect(Collectors.toList());
 	}
 	
 	public List<ActorTO> mapOnTOs(List<ActorEntity> entities){
+		if(entities == null){
+			return null;
+		}
 		return entities.stream().map(entity -> mapOnTO(entity)).collect(Collectors.toList());
 	}
 	
 	public List<ActorEntity> mapOnEntities(List<Long> ids){
+		if(ids == null){
+			return null;
+		}
 		return ids.stream().map(id -> em.getReference(ActorEntity.class, id)).collect(Collectors.toList());
+	}
+	
+	private List<MovieEntity> mapMovieIdsOnEntities(List<Long> ids){
+		if(ids == null){
+			return null;
+		}
+		return ids.stream().map(id -> em.getReference(MovieEntity.class, id)).collect(Collectors.toList());
 	}
 }

@@ -25,10 +25,10 @@ public class ActorServiceImpl implements ActorService {
 	private CooperationDao cooperationDao;
 	private ActorDao actorDao;
 	private ActorMapper actorMapper;
-	
 
 	@Autowired
-	public ActorServiceImpl(MovieDao movieDao, CooperationDao cooperationDao, ActorDao actorDao,ActorMapper actorMapper) {
+	public ActorServiceImpl(MovieDao movieDao, CooperationDao cooperationDao, ActorDao actorDao,
+			ActorMapper actorMapper) {
 		this.movieDao = movieDao;
 		this.cooperationDao = cooperationDao;
 		this.actorDao = actorDao;
@@ -39,37 +39,29 @@ public class ActorServiceImpl implements ActorService {
 
 		List<Long> movies = actor.getMovies();
 
-		for (Long movieId : movies) {
-			MovieEntity movie = movieDao.findOne(movieId);
-			List<MovieEntity> actorMovies = movieDao.findByActorAndPeriod(actor.getId(), movie.getDateOfPremiere(),
-					movie.getDateOfPremiere().minusYears(3));
-			if (actorMovies.size() > 3) {
-				throw new InvalidDataException("Too many movies in given period");
+		if (movies != null) {
+			for (Long movieId : movies) {
+				MovieEntity movie = movieDao.findOne(movieId);
+				
+				List<MovieEntity> actorMovies = movieDao.findMoviesByPeriodWithMatchingIds(movies, movie.getDateOfPremiere(),
+						movie.getDateOfPremiere().minusYears(3));
+				if (actorMovies.size() > 3) {
+					throw new InvalidDataException("Too many movies in given period");
+				}
 			}
 		}
 
-		List<Long> cooperations = actor.getMovies();
-
-		for (Long coopId : cooperations) {
-			CooperationEntity coop = cooperationDao.findOne(coopId);
-			List<CooperationEntity> actorCoops = cooperationDao.findByPeriod(coop.getEffectiveDate(),
-					coop.getExpirationDate());
-			if (actorCoops.size() > 1) {
-				throw new InvalidDataException("Actor can have only one cooperation in given period of time");
-			}
-			List<MovieEntity> moviesWithInvalidStudio = movieDao.findByActorAndPeriodAndDifferentStudio(actor.getId(),
-					coop.getStudio().getId(), coop.getEffectiveDate(), coop.getExpirationDate());
-			if (!moviesWithInvalidStudio.isEmpty()) {
-				throw new InvalidDataException("During the cooperation actor can play only for given studio");
-			}
+		if (actor.getCooperations() != null) {
+			throw new InvalidDataException("You need add actor first to assign cooperations");
 		}
+		
+		actorDao.save(actorMapper.mapOnEntity(actor));
 
 	}
 
 	@Override
 	public List<ActorTO> findActorsWhoDidntActInGivenPeriod(LocalDate startDate, LocalDate endDate) {
-		return actorMapper.mapOnTOs(actorDao.findActorsNotPlayingInGivenPeriod(startDate, endDate)) ;
+		return actorMapper.mapOnTOs(actorDao.findActorsNotPlayingInGivenPeriod(startDate, endDate));
 	}
-	
 
 }

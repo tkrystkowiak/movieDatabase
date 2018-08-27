@@ -50,7 +50,7 @@ public class ActorEntity extends AbstractEntity {
 	}
 	
 	public ActorEntity(Builder builder) {
-		super(builder.version,builder.id, builder.persistTime, builder.updateTime);
+		super(builder.version,builder.id);
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
 		this.birthDate = builder.birthDate;

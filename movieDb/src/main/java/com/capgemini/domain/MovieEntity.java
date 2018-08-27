@@ -1,27 +1,20 @@
 package com.capgemini.domain;
 
-import java.sql.Date;
+
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
-import com.capgemini.domain.ActorEntity.Builder;
-
-import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
+import com.capgemini.domain.MovieEntity.Builder;
 
 @Entity
 @Table(name = "MOVIES")
@@ -70,7 +63,7 @@ public class MovieEntity extends AbstractEntity {
 	}
 	
 	public MovieEntity(Builder builder) {
-		super(builder.version,builder.id, builder.persistTime, builder.updateTime);
+		super(builder.version,builder.id);
 		this.title = builder.title;
 		this.genre = builder.genre;
 		this.type = builder.type;
@@ -188,8 +181,6 @@ public class MovieEntity extends AbstractEntity {
 	public static class Builder{
 		
 		private Long id;
-		private Time persistTime;
-		private Time updateTime;
 		private Long version;
 		private String title;
 		private String genre;
@@ -207,16 +198,6 @@ public class MovieEntity extends AbstractEntity {
 		
 		public Builder withId (Long id){
 			this.id = id;
-			return this;
-		}
-		
-		public Builder withPersistTime (Time persistTime){
-			this.persistTime = persistTime;
-			return this;
-		}
-		
-		public Builder withUpdateTime (Time updateTime){
-			this.updateTime = updateTime;
 			return this;
 		}
 		
@@ -255,8 +236,8 @@ public class MovieEntity extends AbstractEntity {
 			return this;
 		}
 		
-		public Builder withIs3D (Boolean is3D){
-			this.threeD = is3D;
+		public Builder withThreeD (Boolean threeD){
+			this.threeD = threeD;
 			return this;
 		}
 		
@@ -288,7 +269,7 @@ public class MovieEntity extends AbstractEntity {
 		public MovieEntity build(){
 			return new MovieEntity(this);
 		}
-		
+
 	}
 	
 }

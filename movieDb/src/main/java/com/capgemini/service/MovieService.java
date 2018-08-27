@@ -14,13 +14,13 @@ public interface MovieService {
 	
 	List<MovieTO> findMovieByCriteria(SearchCriteria criteria);
 	
-	Integer calculateAverageFirstWeekRevenue();
+	Double calculateAverageFirstWeekRevenue();
 	
-	Integer calculateAverageTotalRevenue();
+	Double calculateAverageTotalRevenue();
 	
-	Long calculateCombinedRevenueOfTopExpepensiveMovies(int NumberOfMovies);
+	Integer calculateCombinedRevenueOfTopExpepensiveMovies(int NumberOfMovies);
 	
-	Long calculateCombinedMoviesBudgetInGivenPeriod(LocalDate startDate,LocalDate endDate);
+	Integer calculateCombinedMoviesBudgetInGivenPeriod(LocalDate startDate,LocalDate endDate);
 	
 	List<MovieTO> findLongestMoviesByGivenStudioInGivenPeriod(long studioId, LocalDate startDate, LocalDate endDate);
 }

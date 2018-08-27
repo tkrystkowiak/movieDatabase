@@ -1,54 +1,61 @@
-package com.capgemini.domain;
+package com.capgemini.types;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+public class CooperationTO {
+	
+	private Long version;
 
-@Entity
-@Table(name = "COOPERATIONS")
-@EntityListeners(EntityListener.class)
-public class CooperationEntity extends AbstractEntity {
+	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	private StudioEntity studio;
-	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	private ActorEntity actor;
-	
-	@Column(nullable  = false)
+	private Long studio;
+
+	private Long actor;
+
 	private LocalDate effectiveDate;
-	
-	@Column
+
 	private LocalDate expirationDate;
 
-	public CooperationEntity(Builder builder) {
-		super(builder.version, builder.id);
-		this.actor = builder.actor;
+	public CooperationTO(Builder builder) {
+		this.version = builder.version;
+		this.id = builder.id;
 		this.studio = builder.studio;
+		this.actor = builder.actor;
 		this.effectiveDate = builder.effectiveDate;
 		this.expirationDate = builder.expirationDate;
 	}
 	
-	public CooperationEntity() {}
+	
+	
+	public Long getVersion() {
+		return version;
+	}
 
-	public StudioEntity getStudio() {
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getStudio() {
 		return studio;
 	}
 
-	public void setStudio(StudioEntity studio) {
+	public void setStudio(Long studio) {
 		this.studio = studio;
 	}
 
-	public ActorEntity getActor() {
+	public Long getActor() {
 		return actor;
 	}
 
-	public void setActor(ActorEntity actor) {
+	public void setActor(Long actor) {
 		this.actor = actor;
 	}
 
@@ -78,13 +85,14 @@ public class CooperationEntity extends AbstractEntity {
 
 		private Long id;
 		
-		private StudioEntity studio;
+		private Long studio;
 
-		private ActorEntity actor;
+		private Long actor;
 
 		private LocalDate effectiveDate;
 
 		private LocalDate expirationDate;
+		
 		
 		public Builder withId (Long id){
 			this.id = id;
@@ -96,12 +104,12 @@ public class CooperationEntity extends AbstractEntity {
 			return this;
 		}
 		
-		public Builder withStudio (StudioEntity studio){
+		public Builder withStudio (Long studio){
 			this.studio = studio;
 			return this;
 		}
 		
-		public Builder withActor (ActorEntity actor){
+		public Builder withActor (Long actor){
 			this.actor = actor;
 			return this;
 		}
@@ -116,9 +124,10 @@ public class CooperationEntity extends AbstractEntity {
 			return this;
 		}
 		
-		public CooperationEntity build(){
-			return new CooperationEntity(this);
+		public CooperationTO build(){
+			return new CooperationTO(this);
 		}
 
 	}
+	
 }

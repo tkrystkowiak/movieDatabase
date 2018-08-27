@@ -21,52 +21,75 @@ public class MovieMapper {
 	
 	@Autowired
 	ActorMapper actorMapper;
+	@Autowired
+	StudioMapper studioMapper;
+	
 	
 	public MovieTO mapOnTO(MovieEntity mappedFrom){
-		MovieTO mappedOn = MovieTO.builder()
-				.id(mappedFrom.getId())
-				.genre(mappedFrom.getGenre())
-				.type(mappedFrom.getType())
-				.title(mappedFrom.getTitle())
-				.dateOfPremiere(mappedFrom.getDateOfPremiere())
-				.firstWeekRevenue(mappedFrom.getFirstWeekRevenue())
-				.totalRevenue(mappedFrom.getTotalRevenue())
-				.budget(mappedFrom.getBudget())
-				.is3D(mappedFrom.getThreeD())
-				.length(mappedFrom.getLength())
-				.cast(actorMapper.mapOnIds(mappedFrom.getCast()))
-				.studio(mappedFrom.getStudio().getId())
+		if(mappedFrom == null){
+			return null;
+		}
+		
+		MovieTO mappedOn = MovieTO.newBuilder()
+				.withId(mappedFrom.getId())
+				.withGenre(mappedFrom.getGenre())
+				.withType(mappedFrom.getType())
+				.withTitle(mappedFrom.getTitle())
+				.withCountry(mappedFrom.getCountry())
+				.withDateOfPremiere(mappedFrom.getDateOfPremiere())
+				.withFirstWeekRevenue(mappedFrom.getFirstWeekRevenue())
+				.withTotalRevenue(mappedFrom.getTotalRevenue())
+				.withBudget(mappedFrom.getBudget())
+				.withThreeD(mappedFrom.getThreeD())
+				.withLength(mappedFrom.getLength())
+				.withCast(actorMapper.mapOnIds(mappedFrom.getCast()))
+				.withStudio(mappedFrom.getStudio().getId())
 				.build();
 		return mappedOn;
 	}
 	
 	public MovieEntity mapOnEntity(MovieTO mappedFrom){
+		if(mappedFrom == null){
+			return null;
+		}
+		
 		MovieEntity mappedOn = MovieEntity.newBuilder()
 				.withId(mappedFrom.getId())
 				.withGenre(mappedFrom.getGenre())
 				.withType(mappedFrom.getType())
 				.withTitle(mappedFrom.getTitle())
+				.withCountry(mappedFrom.getCountry())
 				.withDateOfPremiere(mappedFrom.getDateOfPremiere())
 				.withFirstWeekRevenue(mappedFrom.getFirstWeekRevenue())
 				.withTotalRevenue(mappedFrom.getTotalRevenue())
 				.withBudget(mappedFrom.getBudget())
-				.withIs3D(mappedFrom.getIs3D())
+				.withThreeD(mappedFrom.getThreeD())
 				.withLength(mappedFrom.getLength())
 				.withCast(actorMapper.mapOnEntities(mappedFrom.getCast()))
-				.withStudio(em.getReference(StudioEntity.class, mappedFrom.getStudio()))
+				.withStudio(studioMapper.mapOnEntityFromId(mappedFrom.getStudio()))
 				.build();
 		return mappedOn;
 	}
 	
 	public List<Long> mapOnIds(List<MovieEntity> entities){
+		if(entities == null){
+			return null;
+		}
+		
 		return entities.stream().map(entity -> entity.getId()).collect(Collectors.toList());
 	}
 	
 	public List<MovieTO> mapOnTOs(List<MovieEntity> entities){
+		if(entities == null){
+			return null;
+		}
 		return entities.stream().map(entity -> mapOnTO(entity)).collect(Collectors.toList());
 	}
 	
 	public List<MovieEntity> mapOnEntities(List<Long> ids){
+		if(ids == null){
+			return null;
+		}
 		return ids.stream().map(id -> em.getReference(MovieEntity.class, id)).collect(Collectors.toList());
 	}
 }

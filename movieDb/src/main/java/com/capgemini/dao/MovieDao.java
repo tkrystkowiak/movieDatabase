@@ -19,7 +19,5 @@ public interface MovieDao extends JpaRepository<MovieEntity,Long>, CustomMovieDa
 			+ " and m.dateOfPremiere between :startDate and :endDate")
 	List<MovieEntity> findByTitleCountryAndDate(@Param("title") String title,@Param("country") String country,
 			@Param("startDate") LocalDate startDate,@Param("endDate") LocalDate endDate);
-
-	List<MovieEntity> findByActorAndPeriod(Long id, LocalDate dateOfPremiere, LocalDate dateOfPremiere2);
 	
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.capgemini.domain.MovieEntity;
 import com.capgemini.domain.SearchCriteria;
 import com.capgemini.domain.StudioEntity;
+import com.capgemini.exceptions.InvalidDataException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -45,11 +47,11 @@ public class MovieDaoTest {
 				.withType("Technicolor")
 				.withTitle("Matrix")
 				.withCountry("Polska")
-				.withDateOfPremiere(new Date(new SimpleDateFormat("yyyy-MM-dd").parse("2018-03-10").getTime()))
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
 				.withFirstWeekRevenue(2)
 				.withTotalRevenue(5)
 				.withBudget(3)
-				.withIs3D(false)
+				.withThreeD(false)
 				.withLength(120)
 				.build();
 		// when
@@ -72,11 +74,11 @@ public class MovieDaoTest {
 				.withType("Technicolor")
 				.withTitle("Matrix")
 				.withCountry("Polska")
-				.withDateOfPremiere(new Date(new SimpleDateFormat("yyyy-MM-dd").parse("2018-03-10").getTime()))
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
 				.withFirstWeekRevenue(2)
 				.withTotalRevenue(5)
 				.withBudget(3)
-				.withIs3D(false)
+				.withThreeD(false)
 				.withLength(120)
 				.build();
 		movieDao.save(movie);
@@ -100,11 +102,11 @@ public class MovieDaoTest {
 				.withType("Technicolor")
 				.withTitle("Matrix")
 				.withCountry("Polska")
-				.withDateOfPremiere(new Date(new SimpleDateFormat("yyyy-MM-dd").parse("2018-03-10").getTime()))
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
 				.withFirstWeekRevenue(2)
 				.withTotalRevenue(5)
 				.withBudget(3)
-				.withIs3D(false)
+				.withThreeD(false)
 				.withLength(120)
 				.withStudio(studio)
 				.build();
@@ -116,8 +118,8 @@ public class MovieDaoTest {
 				.withThreeD(false)
 				.withMinLength(100)
 				.withMaxLength(150)
-				.withMinDateOfPremiere(new Date(new SimpleDateFormat("yyyy-MM-dd").parse("2018-03-08").getTime()))
-				.withMaxDateOfPremiere(new Date(new SimpleDateFormat("yyyy-MM-dd").parse("2018-03-15").getTime()))
+				.withMinDateOfPremiere(LocalDate.of(2018,03,8))
+				.withMaxDateOfPremiere(LocalDate.of(2018,03,15))
 				.withStudio(studio.getId())
 				.build();
 
@@ -135,11 +137,11 @@ public class MovieDaoTest {
 				.withType("Technicolor")
 				.withTitle("Matrix")
 				.withCountry("Polska")
-				.withDateOfPremiere(new Date(new SimpleDateFormat("yyyy-MM-dd").parse("2018-03-10").getTime()))
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
 				.withFirstWeekRevenue(2)
 				.withTotalRevenue(5)
 				.withBudget(3)
-				.withIs3D(false)
+				.withThreeD(false)
 				.withLength(120)
 				.build();
 		movie = movieDao.save(movie);
@@ -153,5 +155,32 @@ public class MovieDaoTest {
 		assertEquals("Matrix", actual.get(0).getTitle());
 
 	}
-
+	
+	@Test
+	public void testShouldCalculateAverageFirstWeekRevenue() throws InvalidDataException, ParseException{
+		//given
+		movieDao.save(generateSampleMovieWithFirstWekRevenue(2));
+		movieDao.save(generateSampleMovieWithFirstWekRevenue(3));
+		movieDao.save(generateSampleMovieWithFirstWekRevenue(4));
+		//when
+		double result = movieDao.findAverageFirstWeekRevenue();
+		entityManager.flush();
+		//then
+		assertEquals(3.0,result);
+	}
+	
+	public MovieEntity generateSampleMovieWithFirstWekRevenue(int revenue){
+		return MovieEntity.newBuilder()
+				.withGenre("Sci-Fi")
+				.withType("Technicolor")
+				.withTitle("Matrix")
+				.withCountry("Polska")
+				.withDateOfPremiere(LocalDate.of(2018,03,10))
+				.withFirstWeekRevenue(revenue)
+				.withTotalRevenue(5)
+				.withBudget(3)
+				.withThreeD(false)
+				.withLength(120)
+				.build();
+	}
 }

@@ -1,50 +1,51 @@
 package com.capgemini.types;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.capgemini.domain.ActorEntity;
+import com.capgemini.domain.MovieEntity;
+import com.capgemini.domain.StudioEntity;
 
 import lombok.Builder;
 import lombok.NonNull;
 
-@Builder
 public class MovieTO {
 	
-	@NonNull
+	private Long version;
 	private Long id;
-	
-	@NonNull
 	private String title;
-	
-	@NonNull
 	private String genre;
-	
-	@NonNull
 	private String type;
-	
-	@NonNull
 	private Integer length;
-	
-	@NonNull
 	private LocalDate dateOfPremiere;
-	
-	@NonNull
 	private String country;
-	
-	@NonNull
-	private Boolean is3D;
-	
-	@NonNull
+	private Boolean threeD;
 	private Integer budget;
-	
-	@NonNull
 	private Integer totalRevenue;
-	
-	@NonNull
 	private Integer firstWeekRevenue;
-	
 	private List<Long> cast;
-	
 	private Long studio;
+
+	
+	
+	public MovieTO(Builder builder) {
+		this.version = builder.version;
+		this.id = builder.id; 
+		this.title = builder.title;
+		this.genre = builder.genre;
+		this.type = builder.type;
+		this.length = builder.length;
+		this.dateOfPremiere = builder.dateOfPremiere;
+		this.country = builder.country;
+		this.threeD = builder.threeD;
+		this.budget = builder.budget;
+		this.totalRevenue = builder.totalRevenue;
+		this.firstWeekRevenue = builder.firstWeekRevenue;
+		this.cast = builder.cast;
+		this.studio = builder.studio;
+	}
 
 	public Long getId() {
 		return id;
@@ -102,12 +103,12 @@ public class MovieTO {
 		this.country = country;
 	}
 
-	public Boolean getIs3D() {
-		return is3D;
+	public Boolean getThreeD() {
+		return threeD;
 	}
 
-	public void setIs3D(Boolean is3d) {
-		is3D = is3d;
+	public void setIs3D(Boolean threeD) {
+		this.threeD = threeD;
 	}
 
 	public Integer getBudget() {
@@ -150,6 +151,102 @@ public class MovieTO {
 		this.studio = studio;
 	}
 	
+	public static Builder newBuilder(){
+		return new Builder();
+	}
 	
+	public static class Builder{
+		
+		private Long id;
+		private Long version;
+		private String title;
+		private String genre;
+		private String type;
+		private Integer length;
+		private LocalDate dateOfPremiere;
+		private String country;
+		private Boolean threeD;
+		private Integer budget;
+		private Integer totalRevenue;
+		private Integer firstWeekRevenue;
+		private List<Long> cast;
+		private Long studio;
+		
+		
+		public Builder withId (Long id){
+			this.id = id;
+			return this;
+		}
+		
+		public Builder withVersion (Long version){
+			this.version = version;
+			return this;
+		}
+		
+		public Builder withTitle (String title){
+			this.title = title;
+			return this;
+		}
+		
+		public Builder withGenre (String genre){
+			this.genre = genre;
+			return this;
+		}
+		
+		public Builder withType (String type){
+			this.type = type;
+			return this;
+		}
+		
+		public Builder withLength (Integer length){
+			this.length = length;
+			return this;
+		}
+		
+		public Builder withDateOfPremiere (LocalDate dateOfPremiere){
+			this.dateOfPremiere = dateOfPremiere;
+			return this;
+		}
+		
+		public Builder withCountry (String country){
+			this.country = country;
+			return this;
+		}
+		
+		public Builder withThreeD (Boolean threeD){
+			this.threeD = threeD;
+			return this;
+		}
+		
+		public Builder withBudget (Integer budget){
+			this.budget = budget;
+			return this;
+		}
+		
+		public Builder withTotalRevenue (Integer totalRevenue){
+			this.totalRevenue = totalRevenue;
+			return this;
+		}
+		
+		public Builder withFirstWeekRevenue (Integer firstWeekRevenue){
+			this.firstWeekRevenue = firstWeekRevenue;
+			return this;
+		}
+		
+		public Builder withCast (List<Long> cast){
+			this.cast = cast;
+			return this;
+		}
+		
+		public Builder withStudio (Long studio){
+			this.studio = studio;
+			return this;
+		}
+		
+		public MovieTO build(){
+			return new MovieTO(this);
+		}
+		
+	}
 	
 }

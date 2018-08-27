@@ -1,12 +1,11 @@
 package com.capgemini.service.impl;
 
-import java.sql.Date;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.capgemini.dao.MovieDao;
 import com.capgemini.domain.SearchCriteria;
@@ -15,6 +14,7 @@ import com.capgemini.mappers.MovieMapper;
 import com.capgemini.service.MovieService;
 import com.capgemini.types.MovieTO;
 
+@Service
 public class MovieServiceImpl implements MovieService {
 
 	private final MovieDao movieDao;
@@ -50,22 +50,22 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public Integer calculateAverageFirstWeekRevenue() {
+	public Double calculateAverageFirstWeekRevenue() {
 		return movieDao.findAverageFirstWeekRevenue();
 	}
 
 	@Override
-	public Integer calculateAverageTotalRevenue() {
+	public Double calculateAverageTotalRevenue() {
 		return movieDao.findAverageTotalRevenue();
 	}
 
 	@Override
-	public Long calculateCombinedRevenueOfTopExpepensiveMovies(int numberOfMovies) {
+	public Integer calculateCombinedRevenueOfTopExpepensiveMovies(int numberOfMovies) {
 		return movieDao.findCombinedRevenueOfTopExpensiveMovies(numberOfMovies);
 	}
 
 	@Override
-	public Long calculateCombinedMoviesBudgetInGivenPeriod(LocalDate startDate, LocalDate endDate) {
+	public Integer calculateCombinedMoviesBudgetInGivenPeriod(LocalDate startDate, LocalDate endDate) {
 		return movieDao.findCobinedBudgetOfFilmsInGivenPeriod(startDate, endDate);
 	}
 

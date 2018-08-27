@@ -2,7 +2,6 @@ package com.capgemini.dao.impl;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -68,10 +67,10 @@ public class MovieDaoImpl implements CustomMovieDao {
 	}
 
 	@Override
-	public List<MovieEntity> findByActorAndPeriod(Long actorId, LocalDate startDate, LocalDate endDate) {
-		ActorEntity actor = entityManager.getReference(ActorEntity.class, actorId);
-		return queryFactory.select(movie).from(movie)
-				.where(movie.cast.contains(actor).and(movie.dateOfPremiere.between(endDate, startDate))).fetch();
+	public List<MovieEntity> findMoviesByPeriodWithMatchingIds(List<Long> movieIds, LocalDate startDate, LocalDate endDate) {
+		JPAQuery<MovieEntity> query = new JPAQuery<MovieEntity>(entityManager);
+		return query.select(movie).from(movie)
+				.where(movie.id.in(movieIds).and(movie.dateOfPremiere.between(endDate, startDate))).fetch();
 	}
 	
 	@Override
@@ -79,43 +78,50 @@ public class MovieDaoImpl implements CustomMovieDao {
 			LocalDate endDate) {
 		ActorEntity actor = entityManager.getReference(ActorEntity.class, actorId);
 		StudioEntity studio = entityManager.getReference(StudioEntity.class, studioId);
-		return queryFactory.select(movie).from(movie).where(movie.cast.contains(actor)
-				.and(movie.dateOfPremiere.between(endDate, startDate)).and(movie.studio.ne(studio))).fetch();
+		JPAQuery<MovieEntity> query = new JPAQuery<MovieEntity>(entityManager);
+		return query.select(movie).from(movie).where(movie.cast.contains(actor)
+				.and(movie.dateOfPremiere.between(startDate, endDate)).and(movie.studio.ne(studio))).fetch();
 	}
 	
 	@Override
-	public Integer findAverageFirstWeekRevenue() {
-		return queryFactory.select(movie.firstWeekRevenue.avg()).from(movie).fetchOne().intValue();
+	public Double findAverageFirstWeekRevenue() {
+		JPAQuery<MovieEntity> query = new JPAQuery<MovieEntity>(entityManager);
+		return query.select(movie.firstWeekRevenue.avg()).from(movie).fetchOne();
 	}
 	
 	@Override
-	public Integer findAverageTotalRevenue() {
-		return queryFactory.select(movie.totalRevenue.avg()).from(movie).fetchOne().intValue();
+	public Double findAverageTotalRevenue() {
+		JPAQuery<MovieEntity> query = new JPAQuery<MovieEntity>(entityManager);
+		return query.select(movie.totalRevenue.avg()).from(movie).fetchOne();
 	}
 	
 	@Override
-	public Long findCombinedRevenueOfTopExpensiveMovies(int numberOfMovies) {
-		return queryFactory.select(movie.totalRevenue.sum()).from(movie).where(movie.totalRevenue.in(JPAExpressions
-				.select(movie.totalRevenue).from(movie).limit(numberOfMovies).orderBy(movie.totalRevenue.desc())))
-				.fetchCount();
+	public Integer findCombinedRevenueOfTopExpensiveMovies(int numberOfMovies) {
+		JPAQuery<MovieEntity> query = new JPAQuery<MovieEntity>(entityManager);
+		return query.select(movie.totalRevenue.sum()).from(movie).where(movie.in(findTopExpensiveMovies(numberOfMovies)))
+				.fetchOne();
+				
 	}
 	
 	@Override
-	public Long findCobinedBudgetOfFilmsInGivenPeriod(LocalDate startDate, LocalDate endDate) {
-		return queryFactory.select(movie.budget.sum()).from(movie)
-				.where(movie.dateOfPremiere.between(endDate, startDate)).fetchCount();
+	public Integer findCobinedBudgetOfFilmsInGivenPeriod(LocalDate startDate, LocalDate endDate) {
+		JPAQuery<MovieEntity> query = new JPAQuery<MovieEntity>(entityManager);
+		return query.select(movie.budget.sum()).from(movie)
+				.where(movie.dateOfPremiere.between(startDate,endDate)).fetchOne();
 	}
 	
 	@Override
 	public List<MovieEntity> findLongestMovieWithGivenStudioAndPeriod(Long studioId, LocalDate startDate,
 			LocalDate endDate) {
+		JPAQuery<MovieEntity> query = new JPAQuery<MovieEntity>(entityManager);
 		StudioEntity studio = entityManager.getReference(StudioEntity.class, studioId);
-		return queryFactory.select(movie).from(movie)
-				.where(movie.dateOfPremiere.between(endDate, startDate).and(movie.studio.eq(studio))
+		return query.select(movie).from(movie)
+				.where(movie.dateOfPremiere.between(startDate, endDate).and(movie.studio.eq(studio))
 						.and(movie.length.eq((JPAExpressions.select(movie.length.max()).from(movie).where(
-								movie.dateOfPremiere.between(endDate, startDate).and(movie.studio.eq(studio)))))))
+								movie.dateOfPremiere.between(startDate, endDate).and(movie.studio.eq(studio)))))))
 				.fetch();
 	}
+	
 	
 	@Override
 	public List<Tuple> findNumerOfEachStudioMoviesInGivenPeriod(LocalDate startDate, LocalDate endDate){
@@ -124,6 +130,13 @@ public class MovieDaoImpl implements CustomMovieDao {
 				.where(movie.dateOfPremiere.between(endDate, startDate))
 				.groupBy(movie.studio)
 				.fetch();	
+	}
+	
+	@Override
+	public List<MovieEntity> findTopExpensiveMovies(int numberOfMovies){
+		JPAQuery<MovieEntity> query = new JPAQuery<MovieEntity>(entityManager);
+		return query.select(movie).from(movie).orderBy(movie.budget.desc()).limit(numberOfMovies)
+				.fetch();
 	}
 
 }

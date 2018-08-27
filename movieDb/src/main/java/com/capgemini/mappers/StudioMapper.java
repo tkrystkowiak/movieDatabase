@@ -22,6 +22,9 @@ public class StudioMapper {
 	MovieMapper movieMapper;
 	
 	public StudioTO mapOnTO(StudioEntity mappedFrom){
+		if(mappedFrom == null){
+			return null;
+		}
 		StudioTO mappedOn = StudioTO.builder()
 				.id(mappedFrom.getId())
 				.version(mappedFrom.getVersion())
@@ -34,6 +37,9 @@ public class StudioMapper {
 	}
 	
 	public StudioEntity mapOnEntity(StudioTO mappedFrom){
+		if(mappedFrom == null){
+			return null;
+		}
 		StudioEntity mappedOn = StudioEntity.newBuilder()
 				.withId(mappedFrom.getId())
 				.withVersion(mappedFrom.getVersion())
@@ -42,6 +48,14 @@ public class StudioMapper {
 				.withCooperations(cooperationMapper.mapOnEntities(mappedFrom.getCooperations()))
 				.withMovies(movieMapper.mapOnEntities(mappedFrom.getMovies()))
 				.build();
+		return mappedOn;
+	}
+	
+	public StudioEntity mapOnEntityFromId(Long studio){
+		if(studio == null){
+			return null;
+		}
+		StudioEntity mappedOn = em.getReference(StudioEntity.class, studio);
 		return mappedOn;
 	}
 	
