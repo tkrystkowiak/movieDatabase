@@ -40,7 +40,7 @@ public class ActorMapper {
 				.birthDate(mappedFrom.getBirthDate())
 				.country(mappedFrom.getCountry())
 				.cooperations(cooperationMapper.mapOnIds(mappedFrom.getCooperations()))
-				.movies(mappedFrom.getMovies().stream().map(entity -> entity.getId()).collect(Collectors.toList()))
+				.movies(mapMovieEntitiesOnIds(mappedFrom.getMovies()))
 				.build();
 		return mappedOn;
 	}
@@ -88,5 +88,12 @@ public class ActorMapper {
 			return null;
 		}
 		return ids.stream().map(id -> em.getReference(MovieEntity.class, id)).collect(Collectors.toList());
+	}
+	
+	private List<Long> mapMovieEntitiesOnIds(List<MovieEntity> entities){
+		if(entities == null){
+			return null;
+		}
+		return entities.stream().map(entity -> entity.getId()).collect(Collectors.toList());
 	}
 }

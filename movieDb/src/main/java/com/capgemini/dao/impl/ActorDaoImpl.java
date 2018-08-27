@@ -8,8 +8,10 @@ import javax.persistence.PersistenceContext;
 
 import com.capgemini.dao.CustomActorDao;
 import com.capgemini.domain.ActorEntity;
+import com.capgemini.domain.MovieEntity;
 import com.capgemini.domain.QActorEntity;
 import com.capgemini.domain.QMovieEntity;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class ActorDaoImpl implements CustomActorDao {
@@ -20,14 +22,14 @@ public class ActorDaoImpl implements CustomActorDao {
 	private QActorEntity actor = QActorEntity.actorEntity;
 	private QMovieEntity movie = QMovieEntity.movieEntity;
 	
-	private JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-	
 	@Override
 	public List<ActorEntity> findActorsNotPlayingInGivenPeriod(LocalDate startDate, LocalDate endDate){
-		return queryFactory.select(actor)
+		JPAQuery<ActorEntity> query = new JPAQuery<ActorEntity>(entityManager);
+		return query.select(actor)
 				.from(actor)
-				.leftJoin(movie)
-				.where(movie.dateOfPremiere.notBetween(endDate, startDate))
+				.leftJoin(actor.movies,movie)
+				.where(movie.dateOfPremiere.notBetween(startDate,endDate)
+						.or(actor.movies.isEmpty()))
 				.fetch();
 	}
 	

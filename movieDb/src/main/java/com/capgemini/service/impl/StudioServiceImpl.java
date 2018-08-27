@@ -11,6 +11,7 @@ import com.capgemini.dao.StudioDao;
 import com.capgemini.mappers.StudioMapper;
 import com.capgemini.service.StudioService;
 import com.capgemini.types.StudioTO;
+import com.capgemini.types.StudioWithNumberOfMoviesTO;
 import com.querydsl.core.Tuple;
 
 @Service
@@ -33,7 +34,7 @@ public class StudioServiceImpl implements StudioService {
 	}
 
 	@Override
-	public List<Tuple> calculeteNumberOfStudiosMoviesInGivenYear(int year) {
+	public List<StudioWithNumberOfMoviesTO> calculeteNumberOfStudiosMoviesInGivenYear(int year) {
 		LocalDate startDate = LocalDate.of(year, 1, 1);
 		LocalDate endDate = LocalDate.of(year, 12, 31);
 		return movieDao.findNumerOfEachStudioMoviesInGivenPeriod(startDate, endDate);

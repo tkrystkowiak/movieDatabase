@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.capgemini.domain.MovieEntity;
 import com.capgemini.domain.SearchCriteria;
+import com.capgemini.types.StudioWithNumberOfMoviesTO;
 import com.querydsl.core.Tuple;
 
 public interface CustomMovieDao {
@@ -25,7 +26,7 @@ public interface CustomMovieDao {
 
 	List<MovieEntity> findLongestMovieWithGivenStudioAndPeriod(Long studioId, LocalDate startDate, LocalDate endDate);
 
-	List<Tuple> findNumerOfEachStudioMoviesInGivenPeriod(LocalDate startDate, LocalDate endDate);
+	List<StudioWithNumberOfMoviesTO> findNumerOfEachStudioMoviesInGivenPeriod(LocalDate startDate, LocalDate endDate);
 
 	List<MovieEntity> findTopExpensiveMovies(int numberOfMovies);
 

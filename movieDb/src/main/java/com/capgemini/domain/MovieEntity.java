@@ -55,7 +55,7 @@ public class MovieEntity extends AbstractEntity {
 	@JoinTable(name = "movie_actor", joinColumns = { @JoinColumn(name = "movie_id") },inverseJoinColumns = { @JoinColumn(name = "actor_id") })
 	private List<ActorEntity> cast;
 	
-	@ManyToOne
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "studio_id")
 	private StudioEntity studio;
 	

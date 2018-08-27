@@ -52,7 +52,7 @@ public class ActorServiceImpl implements ActorService {
 		}
 
 		if (actor.getCooperations() != null) {
-			throw new InvalidDataException("You need add actor first to assign cooperations");
+			throw new InvalidDataException("You need to add actor first to assign cooperations");
 		}
 		
 		actorDao.save(actorMapper.mapOnEntity(actor));

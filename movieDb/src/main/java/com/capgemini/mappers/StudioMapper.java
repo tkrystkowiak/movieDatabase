@@ -25,13 +25,13 @@ public class StudioMapper {
 		if(mappedFrom == null){
 			return null;
 		}
-		StudioTO mappedOn = StudioTO.builder()
-				.id(mappedFrom.getId())
-				.version(mappedFrom.getVersion())
-				.country(mappedFrom.getCountry())
-				.name(mappedFrom.getName())
-				.cooperations(cooperationMapper.mapOnIds(mappedFrom.getCooperation()))
-				.movies(movieMapper.mapOnIds(mappedFrom.getMovies()))
+		StudioTO mappedOn = StudioTO.newBuilder()
+				.withId(mappedFrom.getId())
+				.withVersion(mappedFrom.getVersion())
+				.withCountry(mappedFrom.getCountry())
+				.withName(mappedFrom.getName())
+				.withCooperations(cooperationMapper.mapOnIds(mappedFrom.getCooperation()))
+				.withMovies(movieMapper.mapOnIds(mappedFrom.getMovies()))
 				.build();
 		return mappedOn;
 	}

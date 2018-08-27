@@ -66,27 +66,6 @@ public class MovieDaoTest {
 		assertEquals(Long.valueOf(2L),movie.getVersion());
 	}
 
-	@Test
-	public void shouldFindMovieByCountry() throws ParseException {
-		// given
-		MovieEntity movie = MovieEntity.newBuilder()
-				.withGenre("Sci-Fi")
-				.withType("Technicolor")
-				.withTitle("Matrix")
-				.withCountry("Polska")
-				.withDateOfPremiere(LocalDate.of(2018,03,10))
-				.withFirstWeekRevenue(2)
-				.withTotalRevenue(5)
-				.withBudget(3)
-				.withThreeD(false)
-				.withLength(120)
-				.build();
-		movieDao.save(movie);
-		// when
-		List<MovieEntity> actual = movieDao.findWithQueryDSL("Matrix");
-		// then
-		assertEquals("Matrix", actual.get(0).getTitle());
-	}
 
 	@Test
 	public void testShouldFindByCriteriaWithAllFilled() throws ParseException {
@@ -166,7 +145,7 @@ public class MovieDaoTest {
 		double result = movieDao.findAverageFirstWeekRevenue();
 		entityManager.flush();
 		//then
-		assertEquals(3.0,result);
+		assertEquals(3.0,result,0.001);
 	}
 	
 	public MovieEntity generateSampleMovieWithFirstWekRevenue(int revenue){

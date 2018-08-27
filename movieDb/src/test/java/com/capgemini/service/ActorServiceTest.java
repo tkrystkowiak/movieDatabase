@@ -128,12 +128,122 @@ public class ActorServiceTest {
 			actorService.addActor(toSave);
 			}
 			catch(InvalidDataException e){
-				if(e.getMessage().equals("You need add actor first to assign cooperations")){
+				if(e.getMessage().equals("You need to add actor first to assign cooperations")){
 					thrown = true;
 				}
 			}
 			//then
 			assertTrue(thrown);
+	}
+	
+	@Test
+	public void testShouldFindActorsNotPlayingInGivenPeriod() throws InvalidDataException{
+			//given
+			ActorEntity tom = ActorEntity.newBuilder()
+					.withFirstName("Tom")
+					.withLastName("Hardy")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.build();
+		
+			ActorEntity benedict = ActorEntity.newBuilder()
+					.withFirstName("Bendict")
+					.withLastName("Cumberbatch")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.build();
+		
+			actorDao.save(tom);
+			actorDao.save(benedict);
+			//when
+			List<ActorTO> result = actorService.findActorsWhoDidntActInGivenPeriod(LocalDate.of(2010,03,12), LocalDate.of(2012,03,12));
+			//then
+			assertEquals(2, result.size());
+	}
+	
+	@Test
+	public void testShouldNotFindActorsPlayingInGivenPeriod() throws InvalidDataException{
+			//given
+			ActorEntity tom = ActorEntity.newBuilder()
+					.withFirstName("Tom")
+					.withLastName("Hardy")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.build();
+		
+			ActorEntity benedict = ActorEntity.newBuilder()
+					.withFirstName("Bendict")
+					.withLastName("Cumberbatch")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.build();
+		
+			List<ActorEntity> cast = new ArrayList<ActorEntity>();
+			cast.add(actorDao.save(tom));
+			cast.add(actorDao.save(benedict));		
+			
+			MovieEntity movie = MovieEntity.newBuilder()
+					.withGenre("Sci-Fi")
+					.withType("Technicolor")
+					.withTitle("Matrix")
+					.withCountry("Polska")
+					.withDateOfPremiere(LocalDate.of(2011,03,12))
+					.withFirstWeekRevenue(1)
+					.withTotalRevenue(5)
+					.withBudget(3)
+					.withThreeD(false)
+					.withLength(120)
+					.withCast(cast)
+					.build();
+			
+			movieDao.save(movie);
+			//when
+			List<ActorTO> result = actorService.findActorsWhoDidntActInGivenPeriod(LocalDate.of(2010,03,12), LocalDate.of(2012,03,12));
+			//then
+			assertTrue(result.isEmpty());
+	}
+	
+	@Test
+	public void testShouldFindOneActorsPlayingInGivenPeriodAndIgnoreNotPlaying() throws InvalidDataException{
+			//given
+			ActorEntity tom = ActorEntity.newBuilder()
+					.withFirstName("Tom")
+					.withLastName("Hardy")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.build();
+		
+			ActorEntity benedict = ActorEntity.newBuilder()
+					.withFirstName("Benedict")
+					.withLastName("Cumberbatch")
+					.withBirthDate(LocalDate.of(1983,03,12))
+					.withCountry("England")
+					.build();
+		
+			List<ActorEntity> cast = new ArrayList<ActorEntity>();
+			cast.add(actorDao.save(tom));
+			actorDao.save(benedict);		
+			
+			MovieEntity movie = MovieEntity.newBuilder()
+					.withGenre("Sci-Fi")
+					.withType("Technicolor")
+					.withTitle("Matrix")
+					.withCountry("Polska")
+					.withDateOfPremiere(LocalDate.of(2011,03,12))
+					.withFirstWeekRevenue(1)
+					.withTotalRevenue(5)
+					.withBudget(3)
+					.withThreeD(false)
+					.withLength(120)
+					.withCast(cast)
+					.build();
+			
+			movieDao.save(movie);
+			//when
+			List<ActorTO> result = actorService.findActorsWhoDidntActInGivenPeriod(LocalDate.of(2010,03,12), LocalDate.of(2012,03,12));
+			//then
+			assertEquals(1,result.size());
+			assertEquals("Benedict",result.get(0).getFirstName());
 	}
 	
 	public MovieEntity generateSampleMovieWithTitleAndPremiere(String title, LocalDate premiere){

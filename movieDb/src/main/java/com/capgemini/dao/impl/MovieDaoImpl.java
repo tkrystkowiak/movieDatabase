@@ -1,6 +1,7 @@
 package com.capgemini.dao.impl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,8 +13,10 @@ import com.capgemini.dao.CustomMovieDao;
 import com.capgemini.domain.ActorEntity;
 import com.capgemini.domain.MovieEntity;
 import com.capgemini.domain.QMovieEntity;
+import com.capgemini.domain.QStudioEntity;
 import com.capgemini.domain.SearchCriteria;
 import com.capgemini.domain.StudioEntity;
+import com.capgemini.types.StudioWithNumberOfMoviesTO;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -26,6 +29,7 @@ public class MovieDaoImpl implements CustomMovieDao {
 	private EntityManager entityManager;
 
 	private QMovieEntity movie = QMovieEntity.movieEntity;
+	private QStudioEntity studio = QStudioEntity.studioEntity;
 
 	private JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
@@ -124,12 +128,23 @@ public class MovieDaoImpl implements CustomMovieDao {
 	
 	
 	@Override
-	public List<Tuple> findNumerOfEachStudioMoviesInGivenPeriod(LocalDate startDate, LocalDate endDate){
-		return queryFactory.select(movie.studio,movie.count())
+	public List<StudioWithNumberOfMoviesTO> findNumerOfEachStudioMoviesInGivenPeriod(LocalDate startDate, LocalDate endDate){
+		
+		JPAQuery<MovieEntity> query = new JPAQuery<MovieEntity>(entityManager);
+		
+		List<Tuple> tuples = query
+				.select(movie.studio.name,movie.studio.name.count())
 				.from(movie)
-				.where(movie.dateOfPremiere.between(endDate, startDate))
-				.groupBy(movie.studio)
+				.groupBy(movie.studio.name)
 				.fetch();	
+		
+		List<StudioWithNumberOfMoviesTO> toReturn  = new ArrayList<StudioWithNumberOfMoviesTO>();
+		
+		tuples.forEach(tuple -> {
+			toReturn.add(new StudioWithNumberOfMoviesTO(tuple.get(movie.studio.name),tuple.get(movie.studio.name.count())));
+			});
+		
+		return toReturn;
 	}
 	
 	@Override
