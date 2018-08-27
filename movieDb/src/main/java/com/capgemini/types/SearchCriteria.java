@@ -1,4 +1,4 @@
-package com.capgemini.domain;
+package com.capgemini.types;
 
 import java.sql.Date;
 import java.time.LocalDate;

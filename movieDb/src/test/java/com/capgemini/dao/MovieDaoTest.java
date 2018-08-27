@@ -20,9 +20,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.capgemini.domain.MovieEntity;
-import com.capgemini.domain.SearchCriteria;
 import com.capgemini.domain.StudioEntity;
 import com.capgemini.exceptions.InvalidDataException;
+import com.capgemini.types.SearchCriteria;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

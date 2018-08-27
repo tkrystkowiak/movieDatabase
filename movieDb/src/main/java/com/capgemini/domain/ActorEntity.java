@@ -1,6 +1,5 @@
 package com.capgemini.domain;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -9,16 +8,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
-
-import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "ACTORS")
@@ -28,22 +20,19 @@ public class ActorEntity extends AbstractEntity {
 	@Column(name="first_name", nullable = false, length = 50)
 	private String firstName;
 	
-	@NonNull
 	@Column(name="last_name", nullable = false, length = 50)
 	private String lastName;
 	
-	@NonNull
 	@Column(name="birth_date",nullable = false)
 	private LocalDate birthDate;
 	
-	@NonNull
 	@Column(nullable = false)
 	private String country;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany( mappedBy="actor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<CooperationEntity> cooperations;
 	
-	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "cast")
+	@ManyToMany(cascade = CascadeType.MERGE, mappedBy = "cast")
 	private List<MovieEntity> movies;
 	
 	public ActorEntity() {
@@ -116,8 +105,6 @@ public class ActorEntity extends AbstractEntity {
 	public static class Builder{
 		
 		private Long id;
-		private Time persistTime;
-		private Time updateTime;
 		private Long version;
 		private String firstName;
 		private String lastName;
@@ -128,16 +115,6 @@ public class ActorEntity extends AbstractEntity {
 		
 		public Builder withId (Long id){
 			this.id = id;
-			return this;
-		}
-		
-		public Builder withPersistTime (Time persistTime){
-			this.persistTime = persistTime;
-			return this;
-		}
-		
-		public Builder withUpdateTime (Time updateTime){
-			this.updateTime = updateTime;
 			return this;
 		}
 		

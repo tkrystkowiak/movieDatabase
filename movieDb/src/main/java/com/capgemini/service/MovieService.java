@@ -4,9 +4,9 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.capgemini.domain.SearchCriteria;
 import com.capgemini.exceptions.InvalidDataException;
 import com.capgemini.types.MovieTO;
+import com.capgemini.types.SearchCriteria;
 
 public interface MovieService {
 	

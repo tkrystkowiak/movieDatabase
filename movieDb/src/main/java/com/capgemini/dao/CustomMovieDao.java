@@ -4,15 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.capgemini.domain.MovieEntity;
-import com.capgemini.domain.SearchCriteria;
+import com.capgemini.types.SearchCriteria;
 import com.capgemini.types.StudioWithNumberOfMoviesTO;
 import com.querydsl.core.Tuple;
 
 public interface CustomMovieDao {
 	
 	List<MovieEntity> findByCriteria(SearchCriteria searchCriteria);
-	
-	List<MovieEntity> findWithQueryDSL(String title);
 	
 	List<MovieEntity> findByActorAndPeriodAndDifferentStudio(Long actorId,Long studioId, LocalDate startDate, LocalDate endDate);
 	

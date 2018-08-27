@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.dao.MovieDao;
-import com.capgemini.domain.SearchCriteria;
 import com.capgemini.exceptions.InvalidDataException;
 import com.capgemini.mappers.MovieMapper;
 import com.capgemini.service.MovieService;
 import com.capgemini.types.MovieTO;
+import com.capgemini.types.SearchCriteria;
 
 @Service
 public class MovieServiceImpl implements MovieService {

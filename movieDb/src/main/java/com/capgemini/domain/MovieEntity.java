@@ -1,20 +1,19 @@
 package com.capgemini.domain;
 
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.capgemini.domain.MovieEntity.Builder;
 
 @Entity
 @Table(name = "MOVIES")
@@ -51,11 +50,11 @@ public class MovieEntity extends AbstractEntity {
 	@Column(nullable = false)
 	private Integer firstWeekRevenue;
 	
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.MERGE,CascadeType.REFRESH})
 	@JoinTable(name = "movie_actor", joinColumns = { @JoinColumn(name = "movie_id") },inverseJoinColumns = { @JoinColumn(name = "actor_id") })
 	private List<ActorEntity> cast;
 	
-	@ManyToOne(optional = false)
+	@ManyToOne(cascade = {CascadeType.MERGE,CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "studio_id")
 	private StudioEntity studio;
 	

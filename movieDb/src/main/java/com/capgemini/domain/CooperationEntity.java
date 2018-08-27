@@ -2,6 +2,7 @@ package com.capgemini.domain;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 @EntityListeners(EntityListener.class)
 public class CooperationEntity extends AbstractEntity {
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(cascade = {CascadeType.MERGE,CascadeType.REFRESH},fetch = FetchType.LAZY, optional = false)
 	private StudioEntity studio;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)

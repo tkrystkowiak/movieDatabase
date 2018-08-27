@@ -32,10 +32,10 @@ public class StudioEntity extends AbstractEntity {
 	@Column(nullable = false)
 	private String country;
 	
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "studio")
+	@OneToMany(cascade = {CascadeType.MERGE,CascadeType.REFRESH}, fetch = FetchType.LAZY,mappedBy = "studio")
 	private List<MovieEntity> movies;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = {CascadeType.MERGE,CascadeType.REFRESH,CascadeType.REMOVE}, fetch = FetchType.LAZY,  mappedBy="actor")
 	private List<CooperationEntity> cooperations;
 	
 	public StudioEntity() {

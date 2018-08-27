@@ -14,8 +14,8 @@ import com.capgemini.domain.ActorEntity;
 import com.capgemini.domain.MovieEntity;
 import com.capgemini.domain.QMovieEntity;
 import com.capgemini.domain.QStudioEntity;
-import com.capgemini.domain.SearchCriteria;
 import com.capgemini.domain.StudioEntity;
+import com.capgemini.types.SearchCriteria;
 import com.capgemini.types.StudioWithNumberOfMoviesTO;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
@@ -63,11 +63,6 @@ public class MovieDaoImpl implements CustomMovieDao {
 			query.where(movie.threeD.eq(searchCriteria.getThreeD()));
 		}
 		return query.fetch();
-	}
-
-	@Override
-	public List<MovieEntity> findWithQueryDSL(String title) {
-		return queryFactory.select(movie).from(movie).where(movie.title.eq("Matrix")).fetch();
 	}
 
 	@Override
@@ -135,6 +130,7 @@ public class MovieDaoImpl implements CustomMovieDao {
 		List<Tuple> tuples = query
 				.select(movie.studio.name,movie.studio.name.count())
 				.from(movie)
+				.where(movie.dateOfPremiere.between(startDate, endDate))
 				.groupBy(movie.studio.name)
 				.fetch();	
 		

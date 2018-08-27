@@ -123,8 +123,47 @@ public class StudioServiceTest {
 		//then
 		assertEquals(3,result.size());
 		assertEquals("Super",result.get(0).getName());
+		assertEquals(1,result.get(0).getNumberOfMovies());
 		assertEquals("Stare",result.get(1).getName());
+		assertEquals(1,result.get(1).getNumberOfMovies());
 		assertEquals("Nowe",result.get(2).getName());
+		assertEquals(1,result.get(2).getNumberOfMovies());
+	}
+	
+	@Test
+	public void testShouldCalculateNumberOfMoviesPerStudioNotIncludingMoviesFromOtherYears() throws InvalidDataException, ParseException{
+		//given
+		StudioEntity studio1 = StudioEntity.newBuilder()
+				.withName("Super")
+				.withCountry("Polska")
+				.build();
+		
+		StudioEntity studio2 = StudioEntity.newBuilder()
+				.withName("Stare")
+				.withCountry("Polska")
+				.build();
+		
+		StudioEntity studio3 = StudioEntity.newBuilder()
+				.withName("Nowe")
+				.withCountry("Polska")
+				.build();
+		
+		studioDao.save(studio1);
+		studioDao.save(studio2);
+		studioDao.save(studio3);
+		
+		movieDao.save(generateSampleMovieWithStudioAndPremiere(studio1, LocalDate.of(2018,03,10)));
+		movieDao.save(generateSampleMovieWithStudioAndPremiere(studio2, LocalDate.of(2017,04,10)));
+		movieDao.save(generateSampleMovieWithStudioAndPremiere(studio3, LocalDate.of(2017,05,10)));
+		movieDao.save(generateSampleMovieWithStudioAndPremiere(studio1, LocalDate.of(2018,05,10)));
+		
+		//when
+		
+		List<StudioWithNumberOfMoviesTO> result = studioService.calculeteNumberOfStudiosMoviesInGivenYear(2018);
+		//then
+		assertEquals(1,result.size());
+		assertEquals("Super",result.get(0).getName());
+		assertEquals(2,result.get(0).getNumberOfMovies());
 	}
 	
 	public MovieEntity generateSampleMovieWithStudioAndPremiere(StudioEntity studio, LocalDate premiere){
